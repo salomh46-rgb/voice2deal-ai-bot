@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  voice2deal_bot:
+    build: .
+    container_name: voice2deal_ai_bot
+    restart: always
+    environment:
+      - TELEGRAM_TOKEN=${TELEGRAM_TOKEN:-8620702517:AAFiNgQ2HB3o2yXpsuEahNc4byJYte5amHc}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-AQ.Ab8RN6JVDYUVVHaR7Pwpce0JcIWqBjU35JQaTPnGpq3Qxg3Kvg}
+      - ADMIN_ID=${ADMIN_ID:-1320855100}
+      - DB_PATH=/app/data/voice2deal.db
+      - TZ=Asia/Tashkent
+    volumes:
+      - ./data:/app/data
+      - ./reports:/app/reports
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"

@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Voice2Deal — Biznes & Qarz Dashboard</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #0b1329;
+            --card-bg: #16223f;
+            --card-border: #23355d;
+            --accent-blue: #38bdf8;
+            --accent-green: #10b981;
+            --accent-rose: #f43f5e;
+            --accent-amber: #f59e0b;
+        }
+        body { 
+            background-color: var(--bg-color); 
+            color: #f8fafc; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            padding-bottom: 70px;
+        }
+        .card-custom { 
+            background: var(--card-bg); 
+            border: 1px solid var(--card-border); 
+            border-radius: 18px; 
+            padding: 18px; 
+            margin-bottom: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+        }
+        .stat-val { font-size: 22px; font-weight: 700; color: var(--accent-blue); }
+        .stat-green { color: var(--accent-green); }
+        .stat-debt { color: var(--accent-rose); }
+        
+        .nav-tabs {
+            border-bottom: 1px solid var(--card-border);
+            display: flex;
+            justify-content: space-around;
+        }
+        .nav-tabs .nav-link {
+            color: #94a3b8;
+            border: none;
+            padding: 10px 14px;
+            font-weight: 600;
+            font-size: 14px;
+            border-radius: 10px;
+        }
+        .nav-tabs .nav-link.active {
+            color: #fff;
+            background: #2563eb;
+        }
+        .btn-custom {
+            border-radius: 12px;
+            font-weight: 600;
+            padding: 10px 16px;
+        }
+        .debtor-card {
+            background: rgba(255,255,255,0.03);
+            border-radius: 14px;
+            padding: 12px 14px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #0f172a;
+            border-top: 1px solid var(--card-border);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            z-index: 1000;
+        }
+        .bottom-nav-item {
+            color: #94a3b8;
+            text-align: center;
+            font-size: 11px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .bottom-nav-item.active {
+            color: #38bdf8;
+        }
+        .bottom-nav-item i {
+            font-size: 18px;
+            display: block;
+            margin-bottom: 2px;
+        }
+        .plan-box {
+            background: linear-gradient(145deg, #1e293b, #0f172a);
+            border: 1px solid #3b82f6;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-3" style="max-width: 600px;">
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <h5 class="mb-0 fw-bold"><i class="fa fa-microphone-lines text-info me-1"></i> Voice2Deal AI</h5>
+                <small class="text-secondary" id="storeTitle">Do'kon & Qarz Boshqaruvi</small>
+            </div>
+            <span class="badge bg-success bg-opacity-25 text-success border border-success px-2 py-1 rounded-pill" id="planBadge">
+                🎁 14 kun Trial
+            </span>
+        </div>
+
+        <!-- Dynamic Views -->
+        <div id="view-dashboard">
+            <!-- Statistika Kartochkalari -->
+            <div class="row g-2 mb-3">
+                <div class="col-6">
+                    <div class="card-custom p-3 text-center">
+                        <small class="text-secondary"><i class="fa fa-wallet text-success me-1"></i> Bugungi Naqd</small>
+                        <div class="stat-val stat-green" id="todayCash">1 850 000</div>
+                        <small class="text-muted" style="font-size: 11px;">so'm tushum</small>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="card-custom p-3 text-center">
+                        <small class="text-secondary"><i class="fa fa-hand-holding-dollar text-danger me-1"></i> Jami Nasiyalar</small>
+                        <div class="stat-val stat-debt" id="totalDebt">4 300 000</div>
+                        <small class="text-muted" style="font-size: 11px;">so'm qarzda</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grafik -->
+            <div class="card-custom">
+                <h6 class="fw-bold mb-3"><i class="fa fa-chart-line text-info me-2"></i>Oxirgi 7 kunlik savdo</h6>
+                <canvas id="salesChart" height="180"></canvas>
+            </div>
+
+            <!-- Tezkor amallar -->
+            <div class="card-custom">
+                <h6 class="fw-bold mb-2">⚡️ Tezkor Amallar</h6>
+                <div class="d-grid gap-2">
+                    <button class="btn btn-outline-info btn-custom text-start" onclick="switchTab('debtors')">
+                        <i class="fa fa-users me-2"></i> Qarzdorlar ro'yxatini ko'rish & Eslatma
+                    </button>
+                    <button class="btn btn-outline-warning btn-custom text-start" onclick="switchTab('staff')">
+                        <i class="fa fa-user-plus me-2"></i> Sotuvchi / Shogird qo'shish
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Qarzdorlar View -->
+        <div id="view-debtors" style="display:none;">
+            <div class="card-custom">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="fw-bold mb-0"><i class="fa fa-users text-danger me-2"></i>Qarzdorlar Ro'yxati</h6>
+                    <span class="badge bg-danger rounded-pill" id="debtorsCount">3 ta</span>
+                </div>
+                
+                <input type="text" class="form-control bg-dark text-light border-secondary mb-3" placeholder="🔍 Ism yoki telefon bo'yicha qidiruv...">
+
+                <div id="debtorsListContainer">
+                    <div class="debtor-card">
+                        <div class="d-flex justify-content-between align-items-start mb-1">
+                            <div>
+                                <strong class="text-light">Rustam aka (Avto)</strong>
+                                <div class="small text-secondary"><i class="fa fa-phone me-1"></i> +998 90 123 45 67</div>
+                            </div>
+                            <span class="badge bg-danger fs-6">350 000 so'm</span>
+                        </div>
+                        <div class="small text-warning mb-2"><i class="fa fa-clock me-1"></i> Muddat: Dushanba</div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-sm btn-primary w-100" onclick="sendReminder('Rustam aka', '350 000')">
+                                <i class="fa fa-bell me-1"></i> Eslatma Yuborish
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="debtor-card">
+                        <div class="d-flex justify-content-between align-items-start mb-1">
+                            <div>
+                                <strong class="text-light">Akmal Do'konchi</strong>
+                                <div class="small text-secondary"><i class="fa fa-phone me-1"></i> +998 97 765 43 21</div>
+                            </div>
+                            <span class="badge bg-danger fs-6">1 200 000 so'm</span>
+                        </div>
+                        <div class="small text-warning mb-2"><i class="fa fa-clock me-1"></i> Muddat: 10-sentabr</div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-sm btn-primary w-100" onclick="sendReminder('Akmal', '1 200 000')">
+                                <i class="fa fa-bell me-1"></i> Eslatma Yuborish
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Xodimlar View -->
+        <div id="view-staff" style="display:none;">
+            <div class="card-custom">
+                <h6 class="fw-bold mb-3"><i class="fa fa-user-shield text-warning me-2"></i>Xodimlar va Sotuvchilar</h6>
+                <p class="small text-secondary">
+                    Sotuvchilar faqat ovoz orqali savdoni kiritadi. Umumiy kassa balansi va hisobotlar faqat sizga (Xo'jayinga) ko'rinadi.
+                </p>
+
+                <div class="p-3 bg-dark rounded-3 border border-secondary mb-3 text-center">
+                    <small class="text-secondary d-block mb-1">Sotuvchi uchun taklif havolasi:</small>
+                    <code class="text-info" id="inviteCodeDisplay">t.me/Ovozli_SavdoBOT?start=join_shop</code>
+                    <div class="mt-2">
+                        <button class="btn btn-sm btn-outline-info" onclick="copyInvite()"><i class="fa fa-copy me-1"></i> Havoladan nusxa olish</button>
+                    </div>
+                </div>
+
+                <div class="debtor-card">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>Shavkat (Sotuvchi)</strong>
+                            <div class="small text-secondary">Biriktirilgan: Bugun</div>
+                        </div>
+                        <span class="badge bg-success">Faol</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Obuna View -->
+        <div id="view-subscription" style="display:none;">
+            <div class="card-custom">
+                <h6 class="fw-bold mb-3"><i class="fa fa-crown text-warning me-2"></i>Tariflar va Obuna</h6>
+
+                <div class="plan-box">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="fw-bold mb-0 text-info">Oylik Standart</h6>
+                        <span class="badge bg-primary">49 000 so'm / oy</span>
+                    </div>
+                    <ul class="small text-secondary mb-3 ps-3">
+                        <li>Cheksiz ovozli savdo va nasiya kiritish</li>
+                        <li>Qarzdorlarga AI eslatma xabarlari</li>
+                        <li>Excel & PDF hisobotlar</li>
+                    </ul>
+                    <button class="btn btn-primary w-100 btn-custom" onclick="payViaClick('49 000')">
+                        <i class="fa fa-credit-card me-1"></i> Click / Payme orqali to'lash
+                    </button>
+                </div>
+
+                <div class="plan-box border-warning">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="fw-bold mb-0 text-warning">👑 Yillik VIP (35% chegirma)</h6>
+                        <span class="badge bg-warning text-dark">390 000 so'm / yil</span>
+                    </div>
+                    <ul class="small text-secondary mb-3 ps-3">
+                        <li>Barcha imkoniyatlar + Cheksiz sotuvchilar ulash</li>
+                        <li>Telegram Web App VIP dashboard</li>
+                        <li>24/7 Shaxsiy qo'llab-quvvatlash</li>
+                    </ul>
+                    <button class="btn btn-warning text-dark fw-bold w-100 btn-custom" onclick="payViaClick('390 000')">
+                        <i class="fa fa-star me-1"></i> Yillik VIP Obunani Faollashtirish
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation Bar -->
+    <div class="bottom-nav">
+        <div class="bottom-nav-item active" id="tab-dash" onclick="switchTab('dashboard')">
+            <i class="fa fa-chart-pie"></i> Asosiy
+        </div>
+        <div class="bottom-nav-item" id="tab-debt" onclick="switchTab('debtors')">
+            <i class="fa fa-users"></i> Qarzlar
+        </div>
+        <div class="bottom-nav-item" id="tab-staff" onclick="switchTab('staff')">
+            <i class="fa fa-id-badge"></i> Xodimlar
+        </div>
+        <div class="bottom-nav-item" id="tab-sub" onclick="switchTab('subscription')">
+            <i class="fa fa-crown"></i> Obuna
+        </div>
+    </div>
+
+    <script>
+        const tg = window.Telegram?.WebApp;
+        if (tg) {
+            tg.expand();
+            tg.ready();
+        }
+
+        function switchTab(tab) {
+            document.getElementById('view-dashboard').style.display = tab === 'dashboard' ? 'block' : 'none';
+            document.getElementById('view-debtors').style.display = tab === 'debtors' ? 'block' : 'none';
+            document.getElementById('view-staff').style.display = tab === 'staff' ? 'block' : 'none';
+            document.getElementById('view-subscription').style.display = tab === 'subscription' ? 'block' : 'none';
+
+            document.querySelectorAll('.bottom-nav-item').forEach(el => el.classList.remove('active'));
+            if (tab === 'dashboard') document.getElementById('tab-dash').classList.add('active');
+            if (tab === 'debtors') document.getElementById('tab-debt').classList.add('active');
+            if (tab === 'staff') document.getElementById('tab-staff').classList.add('active');
+            if (tab === 'subscription') document.getElementById('tab-sub').classList.add('active');
+        }
+
+        function sendReminder(name, sum) {
+            alert("🔔 " + name + " ga xushmuomala eslatma matni tayyorlandi!");
+        }
+
+        function copyInvite() {
+            navigator.clipboard.writeText("https://t.me/Ovozli_SavdoBOT?start=join_shop");
+            alert("✅ Sotuvchi taklif havolasi nusxalandi!");
+        }
+
+        function payViaClick(sum) {
+            alert("💳 " + sum + " so'mlik to'lov uchun Click / Payme ochilmoqda...");
+        }
+
+        // Chart.js init
+        const ctx = document.getElementById('salesChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Dush', 'Sesh', 'Chor', 'Pay', 'Jum', 'Shan', 'Yak'],
+                datasets: [
+                    {
+                        label: 'Naqd savdo',
+                        data: [1200000, 1900000, 1400000, 2100000, 2800000, 3200000, 1850000],
+                        backgroundColor: '#10b981',
+                        borderRadius: 6
+                    },
+                    {
+                        label: 'Nasiya (Qarz)',
+                        data: [400000, 600000, 300000, 800000, 500000, 900000, 450000],
+                        backgroundColor: '#f43f5e',
+                        borderRadius: 6
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { labels: { color: '#94a3b8' } }
+                },
+                scales: {
+                    x: { ticks: { color: '#94a3b8' }, grid: { display: false } },
+                    y: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

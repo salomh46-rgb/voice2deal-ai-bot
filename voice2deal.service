@@ -1,0 +1,16 @@
+[Unit]
+Description=Voice2Deal AI Telegram Bot Service
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/voice2deal_ai
+ExecStart=/usr/bin/python3 /opt/voice2deal_ai/bot.py
+Restart=always
+RestartSec=5
+Environment=PYTHONUNBUFFERED=1
+EnvironmentFile=-/opt/voice2deal_ai/.env
+
+[Install]
+WantedBy=multi-user.target
