@@ -1,6 +1,19 @@
-# 🎙 Voice2Deal AI — Ovozli Savdo, Ombor & Nasiya Daftari AI Tizimi (@Ovozli_SavdoBOT)
+# 🎙 Voice2Deal AI — Ovozli Savdo, Ombor & Nasiya Daftari AI Tizimi
 
-> **O'zbekiston do'kondorlari va tadbirkorlari uchun sun'iy intellekt (AI) asosida ishlovchi avtomatlashtirilgan kassa, ombor va nasiya daftari Telegram boti.**
+<div align="center">
+
+[![Telegram Bot](https://img.shields.io/badge/Telegram_Bot-%40Ovozli__SavdoBOT-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/Ovozli_SavdoBOT)
+[![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![Google Gemini AI](https://img.shields.io/badge/Google_Gemini-3.1_Flash-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://ai.google.dev/)
+[![Docker Ready](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
+[![SQLite WAL](https://img.shields.io/badge/Database-SQLite_WAL-003B57?style=for-the-badge&logo=sqlite&logoColor=white)](https://www.sqlite.org/)
+[![License MIT](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
+
+<p align="center">
+  <b>O'zbekiston do'kondorlari va tadbirkorlari uchun sun'iy intellekt (AI) asosida ishlovchi avtomatlashtirilgan kassa, ombor va nasiya daftari Telegram boti.</b>
+</p>
+
+</div>
 
 ---
 
@@ -14,6 +27,37 @@
 - 🤖 **24/7 AI Maslahatchi & Tirik Support:** Savollarga javob beruvchi sun'iy intellekt va adminga 2 tomonlama xabar yuborish.
 - 🛡 **Self-Healing & Auto-Recovery:** SQLite WAL yuqori tezlikli rejim, Gemini fallback modellar zanjiri va har 5 daqiqada o'z-o'zini ta'mirlovchi Sentinel Watchdog.
 - 🗄 **Avtomatik Zaxira (Backup):** Har 12 soatda bazani adminga avtomatik yuborish va `/health` diagnostikasi.
+
+---
+
+## 🏛 Tizim Arxitekturasi
+
+```
++-------------------------------------------------------------+
+|              Telegram Foydalanuvchisi / Sotuvchi            |
++-------------------------------------------------------------+
+                              | (Ovozli xabar / Matn)
+                              v
++-------------------------------------------------------------+
+|                   bot.py (Polling & Routing)                |
++-------------------------------------------------------------+
+        |                                       |
+        v                                       v
++-----------------------+           +-----------------------+
+|    ai_engine.py       |           |     database.py       |
+|  - Gemini 3.1 Flash   |           |  - SQLite WAL Mode    |
+|  - Fallback Chain     |           |  - Concurrency Lock   |
+|  - Regex Self-Repair  |           |  - Auto-Integrity     |
++-----------------------+           +-----------------------+
+        |                                       |
+        +-------------------+-------------------+
+                            |
+                            v
++-------------------------------------------------------------+
+|              self_healing_watchdog.py (Sentinel)            |
+|     (5 daqiqalik monitoring, Auto-Repair, Admin Alert)      |
++-------------------------------------------------------------+
+```
 
 ---
 
@@ -73,7 +117,7 @@
 ## ⚙️ Sozlamalar (.env)
 
 ```env
-TELEGRAM_TOKEN=8620702517:AAFiNgQ2HB3o2yXpsuEahNc4byJYte5amHc
+TELEGRAM_TOKEN=your_telegram_bot_token
 GEMINI_API_KEY=your_gemini_api_key
 ADMIN_ID=1320855100
 ```
@@ -81,6 +125,13 @@ ADMIN_ID=1320855100
 ---
 
 ## 👨‍💻 Muallif & Dasturchi
+- **Dasturchi:** [Jasper](https://github.com/salomh46-rgb)
+- **Portfolio:** [bestportfoliyo-o4z2.vercel.app](https://bestportfoliyo-o4z2.vercel.app/)
 - **Telegram Bot:** [@Ovozli_SavdoBOT](https://t.me/Ovozli_SavdoBOT)
 - **Admin ID:** `1320855100`
-- **Texnologiyalar:** Python 3.11+, SQLite (WAL Mode), Google Gemini 3.1 Flash, Telegram Bot API, Docker.
+
+---
+
+<div align="center">
+  <b>⭐️ Agar loyiha sizga ma'qul kelgan bo'lsa, repozitoriyga Star (⭐️) bosishni unutmang!</b>
+</div>
