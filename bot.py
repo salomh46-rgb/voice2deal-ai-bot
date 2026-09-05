@@ -547,7 +547,7 @@ def handle_update(update):
             lang = data.replace("lang_", "")
             ctx = get_user_context(chat_id, first_name, username)
             if not ctx["is_registered"]:
-                create_store_for_owner(chat_id, first_name, username, f"{first_name} do'koni")
+                create_store_for_owner(chat_id, owner_name=first_name, store_name=f"{first_name} do'koni")
                 ctx = get_user_context(chat_id, first_name, username)
             answer_callback_query(cb_id, "Til tanlandi!")
             if lang == "ru":
@@ -1559,7 +1559,9 @@ def main():
                         try:
                             handle_update(update)
                         except Exception as e:
+                            import traceback
                             print(f"Update handling error: {e}", flush=True)
+                            traceback.print_exc()
         except Exception as e:
             time.sleep(2)
 
