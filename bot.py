@@ -211,9 +211,21 @@ def format_receipt(ai_data):
     due_date = ai_data.get("due_date")
     items = ai_data.get("items") or []
 
+    if op_type == "debt_payment":
+        msg = "🏆 <b>TABRIKLAYMIZ! QARZ MUVAFFAQIYATLI QAYTARILDI!</b> 💰\n"
+        msg += "━━━━━━━━━━━━━━━━━━━━━━\n"
+        if client and client != "Noma'lum":
+            msg += f"👤 <b>Mijoz:</b> {client}\n"
+        msg += f"✅ <b>Qabul qilingan summa:</b> +<b>{paid} so'm</b>\n"
+        msg += "📈 <b>Do'koningiz kassa balansi va daromadi oshdi!</b>\n"
+        if comment:
+            msg += f"📝 <i>Izoh: {comment}</i>\n"
+        msg += "━━━━━━━━━━━━━━━━━━━━━━\n"
+        msg += "✅ <i>Kassa va qarz daftariga muvaffaqiyatli saqlandi!</i>"
+        return msg
+
     type_titles = {
         "sale": "🧾 YANGI SOTUV & NASIYA",
-        "debt_payment": "💵 QARZ TO\'LOVI QABUL QILINDI",
         "expense": "📉 DO\'KON XARAJATI",
         "debt_give": "⏳ QARZ BERILDI"
     }
@@ -234,9 +246,7 @@ def format_receipt(ai_data):
             msg += f"  {idx}. {name} — {qty} x {p} = <b>{tot} so'm</b>\n"
 
     msg += "\n💰 <b>Hisob-kitob:</b>\n"
-    if op_type == "debt_payment":
-        msg += f"  • Qabul qilindi: <b>{paid} so'm</b>\n"
-    elif op_type == "expense":
+    if op_type == "expense":
         msg += f"  • Xarajat summasi: <b>{total} so'm</b>\n"
     else:
         msg += f"  • Jami summa: <b>{total} so'm</b>\n"
@@ -255,7 +265,7 @@ def format_receipt(ai_data):
     return msg
 
 def handle_subscription_view(chat_id, ctx):
-    store = ctx["store"]
+    store = ctx.get("store") or {}
     sub_info = check_subscription(store)
     
     msg = "👑 <b>VOICE2DEAL — OBUNA VA TARIFLAR</b>\n"
@@ -263,29 +273,38 @@ def handle_subscription_view(chat_id, ctx):
     msg += f"🏪 <b>Do'kon:</b> {store.get('store_name', 'Mening do\'konim')}\n"
     msg += f"🆔 <b>Do'kon Kodi:</b> <code>{store.get('store_code', 'Noma\'lum')}</code>\n"
     msg += f"📊 <b>Joriy holat:</b> {sub_info['status_text']}\n\n"
+    msg += "💡 <i>Bitta qaytgan qarz butun yillik obuna narxini 10 barobar qoplaydi!</i>\n\n"
     
     msg += "<b>Mavjud tariflar:</b>\n\n"
-    msg += "1️⃣ <b>Oylik Standart</b> — <b>49 000 so'm / oy</b>\n"
-    msg += "   • Kuniga 100 tagacha ovozli savdo kiritish\n"
-    msg += "   • Qarzdorlarga xushmuomala AI eslatmalar\n"
-    msg += "   • Sklad va tovar qoldiqlari nazorati\n"
-    msg += "   • Excel va CSV hisobotlar\n\n"
+    msg += "🥉 <b>1. Basic (Bepul)</b> — <b>0 so'm / oy</b>\n"
+    msg += "   • Oyiga 30 tagacha ovozli savdo kiritish\n"
+    msg += "   • Oddiy kassa va qarzlar ro'yxati\n\n"
 
-    msg += "2️⃣ <b>Oylik Pro</b> — <b>89 000 so'm / oy</b>\n"
-    msg += "   • Kuniga 300 tagacha savdo\n"
-    msg += "   • Cheksiz sotuvchilar (ishchilar) ulash\n"
-    msg += "   • Prioritet AI tezlik va tahlil\n\n"
+    msg += "🥈 <b>2. Standart (Tuzoq)</b> — <b>39 000 so'm / oy</b>\n"
+    msg += "   • Cheksiz ovozli savdo kiritish\n"
+    msg += "   • Sklad va tovarlar nazorati\n"
+    msg += "   ❌ <i>Qarzdorlarga AI eslatmalar yo'q</i>\n"
+    msg += "   ❌ <i>Xodimlarni ulash yo'q</i>\n\n"
+
+    msg += "🥇 <b>3. VIP AI Avtopilot (Tavsiya etiladi ⭐)</b> — <b>45 000 so'm / oy</b>\n"
+    msg += "   🔥 <b>Kuni atigi 1 500 so'm (bitta non narxi!)</b>\n"
+    msg += "   • Cheksiz ovozli savdo kiritish\n"
+    msg += "   • Qarzdorlarga avtomatik xushmuomala AI eslatmalar\n"
+    msg += "   • QR-kodli va termal cheklar chiqarish\n"
+    msg += "   • Cheksiz xodimlar (sotuvchilar) ulash\n"
+    msg += "   • Excel va Google Sheets sinxronizatsiyasi\n\n"
     
-    msg += "3️⃣ <b>Yillik VIP (35% Chegirma)</b> — <b>390 000 so'm / yil</b>\n"
-    msg += "   • 12 oy davomida to'liq imkoniyatlar\n"
-    msg += "   • 24/7 Shaxsiy qo'llab-quvvatlash\n\n"
+    msg += "👑 <b>4. Yillik VIP (45% Chegirma)</b> — <b>290 000 so'm / yil</b>\n"
+    msg += "   • Kuni atigi 800 so'm!\n"
+    msg += "   • 12 oy davomida to'liq VIP imkoniyatlar\n\n"
     msg += "<i>To'lov qilish uchun tarifni tanlang:</i>"
     
     inline_kb = {
         "inline_keyboard": [
-            [{"text": "💳 1. Oylik Standart (49 000 so'm)", "callback_data": "pay_plan_monthly_standard"}],
-            [{"text": "🚀 2. Oylik Pro (89 000 so'm)", "callback_data": "pay_plan_monthly_pro"}],
-            [{"text": "👑 3. Yillik VIP (390 000 so'm)", "callback_data": "pay_plan_yearly_vip"}],
+            [{"text": "🥉 1. Bepul Basic (0 so'm)", "callback_data": "plan_basic_free"}],
+            [{"text": "🥈 2. Standart (39 000 so'm)", "callback_data": "pay_plan_monthly_standard"}],
+            [{"text": "🥇 3. VIP AI Avtopilot (45 000 so'm) ⭐", "callback_data": "pay_plan_monthly_vip"}],
+            [{"text": "👑 4. Yillik VIP (290 000 so'm) — 45% chegirma", "callback_data": "pay_plan_yearly_vip"}],
             [{"text": "🎁 1 oylik sinovni faollashtirish (Test)", "callback_data": "activate_test_sub"}]
         ]
     }
@@ -520,6 +539,34 @@ def handle_update(update):
                 answer_callback_query(cb_id, f"Xatolik: {e}")
             return
 
+        elif data == "plan_basic_free":
+            answer_callback_query(cb_id, "Siz Bepul Basic tarifidasiz (Oyiga 30 ta savdo)!", show_alert=True)
+            return
+
+        elif data.startswith("lang_"):
+            lang = data.replace("lang_", "")
+            ctx = get_user_context(chat_id, first_name, username)
+            if not ctx["is_registered"]:
+                create_store_for_owner(chat_id, first_name, username, f"{first_name} do'koni")
+                ctx = get_user_context(chat_id, first_name, username)
+            answer_callback_query(cb_id, "Til tanlandi!")
+            if lang == "ru":
+                msg_start = f"👋 <b>Здравствуйте, {first_name}!</b>\n\n"
+                msg_start += "🎉 <b>Давайте сразу проверим, как работает система!</b>\n"
+                msg_start += "Пока не нужны ни ваше имя, ни название магазина.\n\n"
+                msg_start += "🎙 <b>Просто отправьте одно голосовое сообщение:</b>\n"
+                msg_start += "<i>(Например: «Дал Акмалю масло на 50 тысяч, оплатил 20 тысяч, 30 тысяч в долг до понедельника»)\n\n"
+                msg_start += "или напишите текстом ниже 👇</i>"
+            else:
+                msg_start = f"👋 <b>Assalomu alaykum, {first_name}!</b>\n\n"
+                msg_start += "🎉 <b>Keling, tizim qanday ishlashini darhol sinab ko‘ramiz!</b>\n"
+                msg_start += "Hozircha ismingiz ham, do‘kon nomi ham shart emas.\n\n"
+                msg_start += "🎙 <b>Shunchaki bitta ovozli xabar yuboring:</b>\n"
+                msg_start += "<i>(Masalan: «Akmal akaga 50 minglik moy berdim, 20 ming to‘ladi, 30 mingi dushanbagacha nasiya»)\n\n"
+                msg_start += "yoki pastga matn ko‘rinishida yozing 👇</i>"
+            send_message(chat_id, msg_start, reply_markup=get_main_keyboard(role="owner"))
+            return
+
         elif data == "activate_test_sub":
             activate_subscription(chat_id, plan="monthly", days=30)
             answer_callback_query(cb_id, "1 oylik Standart obuna muvaffaqiyatli faollashtirildi!", show_alert=True)
@@ -574,10 +621,10 @@ def handle_update(update):
         elif data.startswith("pay_plan_"):
             plan_code = data.replace("pay_plan_", "")
             plan_info = {
-                "monthly_standard": {"title": "1️⃣ Oylik Standart", "amount": "49 000", "days": 30, "plan": "monthly"},
-                "monthly_pro": {"title": "🚀 Oylik Pro", "amount": "89 000", "days": 30, "plan": "pro"},
-                "yearly_vip": {"title": "👑 Yillik VIP", "amount": "390 000", "days": 365, "plan": "yearly"}
-            }.get(plan_code, {"title": "Oylik Standart", "amount": "49 000", "days": 30, "plan": "monthly"})
+                "monthly_standard": {"title": "🥈 Standart", "amount": "39 000", "days": 30, "plan": "standard"},
+                "monthly_vip": {"title": "🥇 VIP AI Avtopilot ⭐", "amount": "45 000", "days": 30, "plan": "monthly"},
+                "yearly_vip": {"title": "👑 Yillik VIP (45% Chegirma)", "amount": "290 000", "days": 365, "plan": "yearly"}
+            }.get(plan_code, {"title": "🥇 VIP AI Avtopilot ⭐", "amount": "45 000", "days": 30, "plan": "monthly"})
             
             USER_STATES[chat_id] = {
                 "state": "waiting_for_payment_receipt",
@@ -1006,10 +1053,17 @@ def handle_update(update):
             else:
                 send_message(chat_id, f"⚠️ {join_res.get('error', 'Ulanishda xatolik')}")
 
-        ctx = get_user_context(chat_id, sender_name, username)
-        if not ctx["is_registered"]:
-            show_role_selection_screen(chat_id, sender_name)
-            return
+        # 1-Qadam: Til tanlash va Frictionless Onboarding
+        lang_kb = {
+            "inline_keyboard": [
+                [{"text": "🇺🇿 O'zbekcha", "callback_data": "lang_uz"}, {"text": "🇷🇺 Русский", "callback_data": "lang_ru"}]
+            ]
+        }
+        msg_lang = f"👋 <b>Assalomu alaykum, {sender_name}! / Здравствуйте!</b>\n\n"
+        msg_lang += "«Voice2Deal — Ovozli Savdo & Qarz Daftari AI» tizimiga xush kelibsiz!\n"
+        msg_lang += "Iltimos, muloqot tilini tanlang / Пожалуйста, выберите язык:"
+        send_message(chat_id, msg_lang, reply_markup=lang_kb)
+        return
             
         role = ctx["role"]
         store = ctx["store"]
@@ -1267,7 +1321,10 @@ def handle_update(update):
             if idx <= 5:
                 inline_buttons.append([{"text": f"🔔 {name} ga eslatma matni", "callback_data": f"remind_{d['id']}"}])
 
+        total_debt_sum = sum(float(d.get("total_debt", 0)) for d in debtors)
         msg_text += "━━━━━━━━━━━━━━━━━━━━━━\n"
+        msg_text += f"🔴 <b>JAMI YOPILMAGAN NASIYALAR:</b> <b>{format_number(total_debt_sum)} so'm</b>\n"
+        msg_text += "💡 <i>VIP AI eslatuvchi orqali mijozlarga avtomatik xushmuomala xabarlar yuborib qarzlarni 2x tezroq undirishingiz mumkin!</i>\n\n"
         msg_text += "<i>Mijozga xushmuomala eslatma matnini olish uchun pastdagi tugmani bosing:</i>"
         
         markup = {"inline_keyboard": inline_buttons} if inline_buttons else None
