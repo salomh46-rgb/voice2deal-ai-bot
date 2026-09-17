@@ -17,7 +17,7 @@ try:
     from config import ADMIN_ID as ALERT_CHAT_ID, TELEGRAM_TOKEN, TELEGRAM_API
 except ImportError:
     ALERT_CHAT_ID = 1320855100
-    TELEGRAM_TOKEN = "8620702517:AAFiNgQ2HB3o2yXpsuEahNc4byJYte5amHc"
+    TELEGRAM_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", os.getenv("TELEGRAM_TOKEN", ""))
     TELEGRAM_API = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}"
 
 def get_system_uptime():

@@ -165,9 +165,19 @@ def parse_json_safely(raw):
     return None
 
 def generate_gentle_reminder(client_name, debt_amount, store_name="Do'konimiz", due_date=None):
-    due_str = f", qaytarish muddati: {due_date}" if due_date else ""
-    formatted_debt = f"{int(debt_amount):,}".replace(",", " ")
+    """
+    Qarzdorlarga bitta tugma bilan muloyim Telegram eslatma yuborish generatori.
+    """
+    due_str = f" (To'lov muddati: {due_date})" if due_date else ""
+    formatted_debt = f"{int(round(float(debt_amount))):,}".replace(",", " ")
     
+    default_text = (
+        f"Assalomu alaykum, hurmatli {client_name}!\n\n"
+        f"'{store_name}' do'konimizdan olingan mahsulotlar uchun {formatted_debt} so'm qarz muddati yetib keldi.{due_str}\n\n"
+        f"Iltimos, to'lovni o'zingizga qulay vaqtda amalga oshirishingizni so'raymiz. To'lovni do'konga kelib yoki qulay bo'lsa Click/Payme orqali yuborishingiz mumkin.\n\n"
+        f"Hamkorligingiz va ishonchingiz uchun katta tashakkur!"
+    )
+
     prompt = f"""Quyidagi mijozga do'kondan olgan nasiyasi (qarzi) haqida juda xushmuomala, hurmat bilan SMS yoki Telegram eslatma xabari yozib ber:
 Mijoz ismi: {client_name}
 Nasiya summasi: {formatted_debt} so'm
@@ -175,9 +185,9 @@ Do'kon nomi: {store_name}
 Muddati: {due_str}
 
 Talablar:
-- Faqat 1 ta tayyor SMS matnini qaytar.
+- Faqat 1 ta tayyor xabar matnini qaytar.
 - O'zbek tilida (lotin alifbosida), juda muloyim, odobli bo'lsin.
-- Matnda mijoz ismi ({client_name}) va do'kon nomi ({store_name}) aniq bo'lsin.
+- Boshlanishi: "Assalomu alaykum, hurmatli {client_name}! {store_name} do'konimizdan olingan mahsulotlar uchun {formatted_debt} so'm qarz muddati yetib keldi..."
 - Click yoki Payme orqali to'lash imkoni borligini xushmuomalalik bilan eslatib o't.
 - Hech qanday qo'shimcha izoh yoki sarlavhasiz, to'g'ridan-to'g'ri yuboriladigan matn bo'lsin.
 """
@@ -207,11 +217,16 @@ Talablar:
         except Exception:
             continue
 
-    return (
-        f"Assalomu alaykum, hurmatli {client_name}!\n\n"
-        f"'{store_name}' do'konimizdan olingan {formatted_debt} so'm miqdoridagi nasiya to'lov muddati eslatmasi.{due_str}\n\n"
-        f"To'lovni do'konga kelib yoki qulay bo'lsa Click/Payme orqali amalga oshirishingiz mumkin. Hamkorligingiz uchun rahmat!"
-    )
+    return default_text
+
+
+def generate_telegram_share_link(reminder_text):
+    """
+    Eslatmani bitta tugma bilan mijozga yuborish uchun Telegram Share URL havolasini yaratadi.
+    """
+    encoded_text = urllib.parse.quote(reminder_text.strip())
+    return f"https://t.me/share/url?url={encoded_text}"
+
 
 
 def generate_ai_business_report(data):

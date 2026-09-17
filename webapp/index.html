@@ -99,6 +99,294 @@
             padding: 16px;
             margin-bottom: 14px;
         }
+
+        /* Bozor printerlari uchun termal kvitansiya uslubi (58mm / 80mm) */
+        .thermal-paper {
+            background: #ffffff;
+            color: #111111;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 13px;
+            padding: 16px 14px;
+            border-radius: 6px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            margin: 0 auto;
+            position: relative;
+            border-top: 4px dashed #666;
+            border-bottom: 4px dashed #666;
+            transition: width 0.3s ease;
+        }
+        .thermal-58mm {
+            width: 280px;
+            max-width: 100%;
+        }
+        .thermal-80mm {
+            width: 380px;
+            max-width: 100%;
+        }
+        .thermal-divider {
+            border-top: 1px dashed #333;
+            margin: 8px 0;
+        }
+        .thermal-double {
+            border-top: 2px solid #111;
+            margin: 8px 0;
+        }
+        .barcode-strip {
+            font-family: monospace;
+            font-size: 18px;
+            letter-spacing: 5px;
+            text-align: center;
+            margin: 8px 0 4px 0;
+        }
+
+        /* Chop etish (Print) qoidalari */
+        @media print {
+            body * {
+                visibility: hidden !important;
+            }
+            #printableReceiptModal, #printableReceiptModal * {
+                visibility: visible !important;
+            }
+            #printableReceiptModal {
+                position: absolute !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100% !important;
+                background: transparent !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                display: block !important;
+            }
+            .modal-dialog, .modal-content, .modal-body {
+                background: transparent !important;
+                border: none !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            .thermal-paper {
+                box-shadow: none !important;
+                border: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                color: #000000 !important;
+                background: #ffffff !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+
+        /* Engine №10: 3D Jarvis Neural Voice Orb Styles */
+        .jarvis-card {
+            background: linear-gradient(165deg, rgba(22, 34, 63, 0.95) 0%, rgba(11, 19, 41, 0.98) 100%);
+            border: 1px solid rgba(56, 189, 248, 0.35);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45), 0 0 24px rgba(56, 189, 248, 0.12);
+            position: relative;
+            overflow: hidden;
+        }
+        .jarvis-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 50% 50%, rgba(56, 189, 248, 0.08), transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .jarvis-core-badge-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            background: rgba(56, 189, 248, 0.12);
+            border: 1px solid rgba(56, 189, 248, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.2);
+        }
+        .jarvis-title {
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            color: #f8fafc;
+        }
+        .jarvis-subtitle {
+            font-size: 11px;
+            color: #94a3b8;
+        }
+        .jarvis-fps-badge {
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #cbd5e1;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 8px;
+        }
+        .jarvis-status-badge {
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            color: #34d399;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+        }
+        .jarvis-status-badge.listening {
+            background: rgba(244, 63, 94, 0.18);
+            border-color: rgba(244, 63, 94, 0.55);
+            color: #fb7185;
+            box-shadow: 0 0 14px rgba(244, 63, 94, 0.35);
+        }
+        .jarvis-pulse-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #10b981;
+            display: inline-block;
+            box-shadow: 0 0 8px #10b981;
+            animation: jarvisPulseDot 1.8s infinite;
+        }
+        .jarvis-status-badge.listening .jarvis-pulse-dot {
+            background: #f43f5e;
+            box-shadow: 0 0 10px #f43f5e;
+            animation: jarvisPulseDot 0.8s infinite;
+        }
+        @keyframes jarvisPulseDot {
+            0% { transform: scale(0.85); opacity: 0.7; }
+            50% { transform: scale(1.35); opacity: 1; }
+            100% { transform: scale(0.85); opacity: 0.7; }
+        }
+        .jarvis-canvas-container {
+            position: relative;
+            width: 100%;
+            height: 250px;
+            border-radius: 16px;
+            background: radial-gradient(circle at 50% 50%, rgba(8, 64, 98, 0.35) 0%, rgba(10, 18, 38, 0.95) 75%), #060b18;
+            border: 1px solid rgba(56, 189, 248, 0.22);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.75);
+            touch-action: none;
+        }
+        .jarvis-canvas-container canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            cursor: grab;
+        }
+        .jarvis-canvas-container canvas:active {
+            cursor: grabbing;
+        }
+        .jarvis-hud-elements {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .jarvis-hud-corner {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-color: rgba(56, 189, 248, 0.45);
+        }
+        .hud-top-left { top: 6px; left: 6px; border-top: 2px solid; border-left: 2px solid; }
+        .hud-top-right { top: 6px; right: 6px; border-top: 2px solid; border-right: 2px solid; }
+        .hud-bottom-left { bottom: 6px; left: 6px; border-bottom: 2px solid; border-left: 2px solid; }
+        .hud-bottom-right { bottom: 6px; right: 6px; border-bottom: 2px solid; border-right: 2px solid; }
+
+        .jarvis-freq-bars {
+            position: absolute;
+            bottom: 8px;
+            left: 12px;
+            right: 12px;
+            display: flex;
+            gap: 10px;
+            z-index: 2;
+        }
+        .freq-meter {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .freq-label {
+            font-size: 8.5px;
+            font-weight: 700;
+            color: #64748b;
+            letter-spacing: 0.5px;
+        }
+        .freq-track {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .freq-fill {
+            height: 100%;
+            width: 6%;
+            transition: width 0.06s ease;
+            border-radius: 2px;
+        }
+        .freq-bass { background: linear-gradient(90deg, #06b6d4, #38bdf8); box-shadow: 0 0 6px #38bdf8; }
+        .freq-mids { background: linear-gradient(90deg, #10b981, #34d399); box-shadow: 0 0 6px #34d399; }
+        .freq-treble { background: linear-gradient(90deg, #6366f1, #a855f7); box-shadow: 0 0 6px #a855f7; }
+
+        .btn-jarvis-mic {
+            background: linear-gradient(135deg, #0284c7 0%, #0d9488 100%);
+            border: 1px solid rgba(56, 189, 248, 0.55);
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 700;
+            border-radius: 14px;
+            padding: 12px 18px;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 18px rgba(2, 132, 199, 0.35);
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-jarvis-mic:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 24px rgba(2, 132, 199, 0.5);
+            border-color: rgba(56, 189, 248, 0.85);
+            color: #ffffff;
+        }
+        .btn-jarvis-mic:active {
+            transform: translateY(1px);
+        }
+        .btn-jarvis-mic.active-recording {
+            background: linear-gradient(135deg, #e11d48 0%, #be123c 100%);
+            border-color: #fb7185;
+            box-shadow: 0 0 24px rgba(225, 29, 72, 0.65);
+            animation: pulseRecordBtn 1.2s infinite alternate;
+        }
+        @keyframes pulseRecordBtn {
+            0% { box-shadow: 0 0 14px rgba(225, 29, 72, 0.4); }
+            100% { box-shadow: 0 0 26px rgba(225, 29, 72, 0.85); }
+        }
+        .jarvis-hint-text {
+            font-size: 11.5px;
+            color: #94a3b8;
+            max-width: 80%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
     </style>
 </head>
 <body>
@@ -116,6 +404,75 @@
 
         <!-- Dynamic Views -->
         <div id="view-dashboard">
+            <!-- Engine №10: 3D Jarvis Neural Voice Orb -->
+            <div class="card-custom jarvis-card mb-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="jarvis-core-badge-icon">
+                            <i class="fa-solid fa-brain text-info"></i>
+                        </div>
+                        <div>
+                            <div class="jarvis-title">AI Voice Assistant & Live Orb</div>
+                            <div class="jarvis-subtitle">Jarvis 3D Neural Voice Core</div>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center gap-1">
+                        <span class="badge jarvis-fps-badge" id="jarvisFpsBadge">
+                            <i class="fa fa-bolt me-1 text-warning"></i><span id="jarvisFpsVal">60</span> FPS
+                        </span>
+                        <span class="badge jarvis-status-badge" id="jarvisStatusBadge">
+                            <span class="jarvis-pulse-dot"></span> Jarvis Core: Active
+                        </span>
+                    </div>
+                </div>
+
+                <!-- 3D Canvas Orb Container -->
+                <div class="jarvis-canvas-container" id="jarvisCanvasWrapper">
+                    <canvas id="jarvisOrbCanvas"></canvas>
+                    <div class="jarvis-hud-elements">
+                        <div class="jarvis-hud-corner hud-top-left"></div>
+                        <div class="jarvis-hud-corner hud-top-right"></div>
+                        <div class="jarvis-hud-corner hud-bottom-left"></div>
+                        <div class="jarvis-hud-corner hud-bottom-right"></div>
+                        
+                        <!-- Mini Frequency Meters in Canvas Overlay -->
+                        <div class="jarvis-freq-bars">
+                            <div class="freq-meter">
+                                <span class="freq-label">BASS</span>
+                                <div class="freq-track"><div class="freq-fill freq-bass" id="freqFillBass"></div></div>
+                            </div>
+                            <div class="freq-meter">
+                                <span class="freq-label">MIDS</span>
+                                <div class="freq-track"><div class="freq-fill freq-mids" id="freqFillMids"></div></div>
+                            </div>
+                            <div class="freq-meter">
+                                <span class="freq-label">TREBLE</span>
+                                <div class="freq-track"><div class="freq-fill freq-treble" id="freqFillTreble"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Voice Trigger & Status controls -->
+                <div class="mt-3">
+                    <button id="jarvisMicBtn" class="btn btn-jarvis-mic w-100" onclick="toggleJarvisVoice()">
+                        <div class="d-flex align-items-center justify-content-center">
+                            <i class="fa-solid fa-microphone-lines me-2" id="jarvisMicIcon"></i>
+                            <span id="jarvisMicLabel">🎙️ Ovozni Tahlil Qilish / Speak</span>
+                        </div>
+                    </button>
+                    <div class="d-flex justify-content-between align-items-center mt-2 px-1">
+                        <small class="jarvis-hint-text" id="jarvisSpeechHint" title="Ovozli buyruq kutilmoqda">
+                            <i class="fa-solid fa-wand-magic-sparkles text-info me-1"></i>
+                            <span id="jarvisSpeechText">Ovozli buyruq: "Rustam akaga 350 ming nasiya yoz"</span>
+                        </small>
+                        <span class="badge bg-dark text-info border border-info border-opacity-25" style="font-size: 10px;">
+                            Fibonacci 380p
+                        </span>
+                    </div>
+                </div>
+            </div>
+
             <!-- Statistika Kartochkalari -->
             <div class="row g-2 mb-3">
                 <div class="col-6">
@@ -140,8 +497,65 @@
                 <canvas id="salesChart" height="180"></canvas>
             </div>
 
+            <!-- So'nggi savdolar & Bozor termal cheki -->
+            <div class="card-custom">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="fw-bold mb-0"><i class="fa fa-receipt text-warning me-2"></i>So'nggi Savdolar & Cheklar</h6>
+                    <span class="badge bg-primary rounded-pill">58mm / 80mm</span>
+                </div>
+                <div class="small text-secondary mb-3">
+                    Bozor printerlari uchun termal chekni to'g'ridan-to'g'ri chop etish yoki rasm/PDF sifatida saqlash:
+                </div>
+
+                <div class="debtor-card">
+                    <div class="d-flex justify-content-between align-items-start mb-1">
+                        <div>
+                            <strong class="text-light">Rustam aka (Avto)</strong>
+                            <div class="small text-secondary">⏳ Nasiya savdo • Bugun 14:30</div>
+                        </div>
+                        <span class="badge bg-danger fs-6">350 000 so'm</span>
+                    </div>
+                    <div class="d-flex gap-2 mt-2">
+                        <button class="btn btn-sm btn-outline-warning w-100" onclick="openReceiptModal('Rustam aka (Avto)', 350000, 0, 350000, 'Dushanba', [{name:'Moy filtr', qty:2, price:75000, total:150000},{name:'Motor moyi 4L', qty:1, price:200000, total:200000}])">
+                            <i class="fa fa-print me-1"></i> Termal Chek (58/80mm)
+                        </button>
+                    </div>
+                </div>
+
+                <div class="debtor-card">
+                    <div class="d-flex justify-content-between align-items-start mb-1">
+                        <div>
+                            <strong class="text-light">Islomxon aka</strong>
+                            <div class="small text-secondary">💵 Qarz to'lovi • Bugun 12:15</div>
+                        </div>
+                        <span class="badge bg-success fs-6">70 000 so'm</span>
+                    </div>
+                    <div class="d-flex gap-2 mt-2">
+                        <button class="btn btn-sm btn-outline-warning w-100" onclick="openReceiptModal('Islomxon aka', 70000, 70000, 0, null, [], 'debt_payment')">
+                            <i class="fa fa-print me-1"></i> Termal Chek (58/80mm)
+                        </button>
+                    </div>
+                </div>
+
+                <div class="debtor-card">
+                    <div class="d-flex justify-content-between align-items-start mb-1">
+                        <div>
+                            <strong class="text-light">Umumiy kassa xaridori</strong>
+                            <div class="small text-secondary">🛒 Naqd savdo • Bugun 11:00</div>
+                        </div>
+                        <span class="badge bg-info fs-6">120 000 so'm</span>
+                    </div>
+                    <div class="d-flex gap-2 mt-2">
+                        <button class="btn btn-sm btn-outline-warning w-100" onclick="openReceiptModal('Xaridor', 120000, 120000, 0, null, [{name:'Kola 1.5L', qty:6, price:15000, total:90000},{name:'Non', qty:6, price:5000, total:30000}], 'sale')">
+                            <i class="fa fa-print me-1"></i> Termal Chek (58/80mm)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <!-- Tezkor amallar -->
             <div class="card-custom">
+
                 <h6 class="fw-bold mb-2">⚡️ Tezkor Amallar</h6>
                 <div class="d-grid gap-2">
                     <button class="btn btn-outline-info btn-custom text-start" onclick="switchTab('debtors')">
@@ -175,8 +589,11 @@
                         </div>
                         <div class="small text-warning mb-2"><i class="fa fa-clock me-1"></i> Muddat: Dushanba</div>
                         <div class="d-flex gap-2">
-                            <button class="btn btn-sm btn-primary w-100" onclick="sendReminder('Rustam aka', '350 000')">
-                                <i class="fa fa-bell me-1"></i> Eslatma Yuborish
+                            <button class="btn btn-sm btn-outline-warning w-50" onclick="openReceiptModal('Rustam aka (Avto)', 350000, 0, 350000, 'Dushanba', [{name:'Moy filtr', qty:2, price:75000, total:150000},{name:'Motor moyi 4L', qty:1, price:200000, total:200000}], 'debt_give')">
+                                <i class="fa fa-print me-1"></i> Qarz Cheki
+                            </button>
+                            <button class="btn btn-sm btn-primary w-50" onclick="sendReminder('Rustam aka (Avto)', '350 000', 'Dushanba')">
+                                <i class="fa fa-bell me-1"></i> Eslatma
                             </button>
                         </div>
                     </div>
@@ -191,8 +608,11 @@
                         </div>
                         <div class="small text-warning mb-2"><i class="fa fa-clock me-1"></i> Muddat: 10-sentabr</div>
                         <div class="d-flex gap-2">
-                            <button class="btn btn-sm btn-primary w-100" onclick="sendReminder('Akmal', '1 200 000')">
-                                <i class="fa fa-bell me-1"></i> Eslatma Yuborish
+                            <button class="btn btn-sm btn-outline-warning w-50" onclick="openReceiptModal('Akmal Do\'konchi', 1200000, 0, 1200000, '10-sentabr', [{name:'Guruch 25kg', qty:2, price:400000, total:800000},{name:'Osh moyi 5L', qty:4, price:100000, total:400000}], 'debt_give')">
+                                <i class="fa fa-print me-1"></i> Qarz Cheki
+                            </button>
+                            <button class="btn btn-sm btn-primary w-50" onclick="sendReminder('Akmal Do\'konchi', '1 200 000', '10-sentabr')">
+                                <i class="fa fa-bell me-1"></i> Eslatma
                             </button>
                         </div>
                     </div>
@@ -266,6 +686,172 @@
         </div>
     </div>
 
+    <!-- 1. Bozor printerlari uchun Termal Kvitansiya Modali (58mm / 80mm) -->
+    <div class="modal fade" id="printableReceiptModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark border-secondary text-light">
+                <div class="modal-header border-secondary no-print py-2">
+                    <h6 class="modal-title fw-bold">
+                        <i class="fa fa-print text-warning me-2"></i>Termal Kvitansiya (Chek)
+                    </h6>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-3">
+                    <!-- Format tanlash (58mm / 80mm) -->
+                    <div class="d-flex justify-content-center gap-2 mb-3 no-print">
+                        <button class="btn btn-sm btn-outline-info active px-3" id="btnPaper58" onclick="setReceiptPaper('58mm')">
+                            📏 58 mm (Kichik printer)
+                        </button>
+                        <button class="btn btn-sm btn-outline-info px-3" id="btnPaper80" onclick="setReceiptPaper('80mm')">
+                            📐 80 mm (Katta printer)
+                        </button>
+                    </div>
+
+                    <!-- Chop etiluvchi oq termal qog'oz -->
+                    <div id="thermalReceiptPaper" class="thermal-paper thermal-58mm">
+                        <div class="text-center fw-bold" style="font-size: 16px;" id="rcStoreName">Mening Do'konim</div>
+                        <div class="text-center small" style="font-size: 11px;" id="rcStoreCode">Do'kon: DK-1052</div>
+                        <div class="text-center small" style="font-size: 11px;" id="rcDateStr">11.09.2026 14:30 | Chek #1042</div>
+                        
+                        <div class="thermal-divider"></div>
+                        <div style="font-size: 12px;">Mijoz: <b id="rcClientName">Rustam aka (Avto)</b></div>
+                        <div class="thermal-divider"></div>
+
+                        <!-- Tovar / Amallar jadvali -->
+                        <table style="width: 100%; font-size: 11px; border-collapse: collapse;">
+                            <thead>
+                                <tr style="border-bottom: 1px solid #000;">
+                                    <th style="text-align: left; padding: 2px 0;">Nomi</th>
+                                    <th style="text-align: center; padding: 2px 0;">Soni</th>
+                                    <th style="text-align: right; padding: 2px 0;">Narx</th>
+                                    <th style="text-align: right; padding: 2px 0;">Jami</th>
+                                </tr>
+                            </thead>
+                            <tbody id="rcItemsBody">
+                                <tr>
+                                    <td>Moy filtr</td>
+                                    <td class="text-center">2</td>
+                                    <td class="text-end">75 000</td>
+                                    <td class="text-end fw-bold">150 000</td>
+                                </tr>
+                                <tr>
+                                    <td>Motor moyi 4L</td>
+                                    <td class="text-center">1</td>
+                                    <td class="text-end">200 000</td>
+                                    <td class="text-end fw-bold">200 000</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="thermal-double"></div>
+
+                        <div class="d-flex justify-content-between fw-bold" style="font-size: 14px;">
+                            <span>JAMI:</span>
+                            <span id="rcTotalSum">350 000 so'm</span>
+                        </div>
+                        <div class="d-flex justify-content-between" style="font-size: 12px;">
+                            <span>To'landi (Naqd):</span>
+                            <span id="rcPaidSum">0 so'm</span>
+                        </div>
+                        <div class="d-flex justify-content-between fw-bold text-dark" style="font-size: 13px; margin-top: 2px;" id="rcDebtRow">
+                            <span>⏳ NASIYA (QARZ):</span>
+                            <span id="rcDebtSum">350 000 so'm</span>
+                        </div>
+                        <div class="d-flex justify-content-between small text-muted" id="rcDueDateRow">
+                            <span>Qaytarish muddati:</span>
+                            <span id="rcDueDate">Dushanba</span>
+                        </div>
+
+                        <div class="thermal-divider"></div>
+                        <div class="text-center small" style="font-size: 11px;">Xaridingiz uchun tashakkur!</div>
+                        <div class="barcode-strip">||| | |||| | ||||| |||</div>
+                        <div class="text-center" style="font-size: 10px; color: #555;">Voice2Deal AI * O'zbekiston</div>
+                    </div>
+                </div>
+                <div class="modal-footer border-secondary no-print d-flex flex-wrap gap-2">
+                    <button type="button" class="btn btn-outline-light flex-grow-1" onclick="copyReceiptText()">
+                        <i class="fa fa-copy me-1"></i> Nusxa
+                    </button>
+                    <button type="button" class="btn btn-info flex-grow-1 text-dark fw-bold" onclick="downloadReceiptImage()">
+                        <i class="fa fa-file-image me-1"></i> Rasm / PDF
+                    </button>
+                    <button type="button" class="btn btn-warning flex-grow-1 fw-bold text-dark" onclick="printThermalReceipt()">
+                        <i class="fa fa-print me-1"></i> Chop etish
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Muloyim Telegram Eslatma Yuborish Modali -->
+    <div class="modal fade" id="gentleReminderModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark border-secondary text-light">
+                <div class="modal-header border-secondary py-2">
+                    <h6 class="modal-title fw-bold">
+                        <i class="fa fa-bell text-warning me-2"></i>Muloyim Telegram Eslatma Generator
+                    </h6>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-3">
+                    <p class="small text-secondary mb-2">
+                        Qarzdor bilan munosabatni saqlab qolgan holda to'lovni tezroq undirish uchun AI xushmuomala matni:
+                    </p>
+                    <div class="mb-3">
+                        <label class="form-label small text-info fw-bold">Tayyor xabar matni:</label>
+                        <textarea id="reminderMessageText" class="form-control bg-black text-light border-secondary" rows="5" style="font-size: 13px;"></textarea>
+                    </div>
+                    <div class="p-2 bg-black rounded-3 border border-secondary border-opacity-50 small mb-2">
+                        <i class="fa fa-shield-halved text-success me-1"></i>
+                        <span>Click / Payme orqali to'lov qulayligi va hurmat bilan eslatma beriladi.</span>
+                    </div>
+                </div>
+                <div class="modal-footer border-secondary d-flex gap-2">
+                    <button type="button" class="btn btn-outline-light flex-grow-1" onclick="copyReminderText()">
+                        <i class="fa fa-copy me-1"></i> Nusxa olish
+                    </button>
+                    <button type="button" class="btn btn-primary flex-grow-1 fw-bold" onclick="shareReminderViaTelegram()">
+                        <i class="fa fa-paper-plane me-1"></i> Telegramda yuborish
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Ovozli Tasdiqlash Dialoqi Modali (Audio Confirmation Loop) -->
+    <div class="modal fade" id="audioConfirmModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark border-info text-light" style="border-width: 2px;">
+                <div class="modal-header border-secondary py-2 bg-info bg-opacity-10">
+                    <h6 class="modal-title fw-bold text-info">
+                        <i class="fa fa-circle-check me-2"></i>Ovozli Savdo Tasdiqlash
+                    </h6>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-3 text-center">
+                    <div class="p-3 bg-black rounded-3 border border-secondary mb-3">
+                        <span class="fs-1 d-block mb-2">📦</span>
+                        <h5 class="fw-bold text-warning mb-1" id="confirmCardTitle">Nasiya: Eshmat aka</h5>
+                        <div class="stat-val text-info mb-2" id="confirmCardAmount">500 000 so'm</div>
+                        <p class="mb-0 text-light small" id="confirmCardQuestion">Kassaga kiritilsinmi? To'g'rimi?</p>
+                    </div>
+                    <p class="small text-secondary mb-0">Xatolik bo'lmasligi uchun savdoni tasdiqlang yoki tahrirlang:</p>
+                </div>
+                <div class="modal-footer border-secondary d-flex gap-2">
+                    <button type="button" class="btn btn-outline-danger flex-grow-1" onclick="cancelTradeAction()">
+                        <i class="fa fa-times me-1"></i> Bekor qilish
+                    </button>
+                    <button type="button" class="btn btn-outline-warning flex-grow-1" onclick="editTradeAction()">
+                        <i class="fa fa-pen me-1"></i> Tahrirlash
+                    </button>
+                    <button type="button" class="btn btn-success flex-grow-1 fw-bold" onclick="approveTradeAction()">
+                        <i class="fa fa-check me-1"></i> Tasdiqlash
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Bottom Navigation Bar -->
     <div class="bottom-nav">
         <div class="bottom-nav-item active" id="tab-dash" onclick="switchTab('dashboard')">
@@ -302,8 +888,206 @@
             if (tab === 'subscription') document.getElementById('tab-sub').classList.add('active');
         }
 
-        function sendReminder(name, sum) {
-            alert("🔔 " + name + " ga xushmuomala eslatma matni tayyorlandi!");
+        // =========================================================================
+        // 1. Bozor Printerlari uchun Termal Chek (58mm / 80mm) Logic
+        // =========================================================================
+        let currentReceiptData = null;
+
+        function setReceiptPaper(width) {
+            const paper = document.getElementById('thermalReceiptPaper');
+            const btn58 = document.getElementById('btnPaper58');
+            const btn80 = document.getElementById('btnPaper80');
+
+            if (width === '80mm') {
+                paper.classList.remove('thermal-58mm');
+                paper.classList.add('thermal-80mm');
+                btn80.classList.add('active');
+                btn58.classList.remove('active');
+            } else {
+                paper.classList.remove('thermal-80mm');
+                paper.classList.add('thermal-58mm');
+                btn58.classList.add('active');
+                btn80.classList.remove('active');
+            }
+        }
+
+        function openReceiptModal(clientName, total, paid, debt, dueDate, items = [], opType = 'sale') {
+            currentReceiptData = { clientName, total, paid, debt, dueDate, items, opType };
+
+            document.getElementById('rcClientName').innerText = clientName;
+            document.getElementById('rcTotalSum').innerText = Number(total).toLocaleString('uz-UZ') + " so'm";
+            document.getElementById('rcPaidSum').innerText = Number(paid).toLocaleString('uz-UZ') + " so'm";
+
+            const debtRow = document.getElementById('rcDebtRow');
+            const dueDateRow = document.getElementById('rcDueDateRow');
+
+            if (Number(debt) > 0) {
+                debtRow.style.display = 'flex';
+                document.getElementById('rcDebtSum').innerText = Number(debt).toLocaleString('uz-UZ') + " so'm";
+                if (dueDate) {
+                    dueDateRow.style.display = 'flex';
+                    document.getElementById('rcDueDate').innerText = dueDate;
+                } else {
+                    dueDateRow.style.display = 'none';
+                }
+            } else {
+                debtRow.style.display = 'none';
+                dueDateRow.style.display = 'none';
+            }
+
+            const tbody = document.getElementById('rcItemsBody');
+            tbody.innerHTML = '';
+            if (items && items.length > 0) {
+                items.forEach(it => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td style="padding: 2px 0;">${it.name}</td>
+                        <td class="text-center" style="padding: 2px 0;">${it.qty}</td>
+                        <td class="text-end" style="padding: 2px 0;">${Number(it.price).toLocaleString('uz-UZ')}</td>
+                        <td class="text-end fw-bold" style="padding: 2px 0;">${Number(it.total).toLocaleString('uz-UZ')}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } else {
+                const tr = document.createElement('tr');
+                const label = opType === 'debt_payment' ? 'Qarz to\'lovi' : (debt > 0 ? 'Nasiya savdo' : 'Naqd savdo');
+                tr.innerHTML = `
+                    <td colspan="3" style="padding: 3px 0;">${label}</td>
+                    <td class="text-end fw-bold" style="padding: 3px 0;">${Number(total).toLocaleString('uz-UZ')} so'm</td>
+                `;
+                tbody.appendChild(tr);
+            }
+
+            const modal = new bootstrap.Modal(document.getElementById('printableReceiptModal'));
+            modal.show();
+        }
+
+        function printThermalReceipt() {
+            window.print();
+        }
+
+        function downloadReceiptImage() {
+            // Chekni canvas orqali rasmga aylantirish simulyatsiyasi va yuklash
+            const paper = document.getElementById('thermalReceiptPaper');
+            const client = document.getElementById('rcClientName').innerText.replace(/\s+/g, '_');
+            
+            // Canvas yaratamiz
+            const canvas = document.createElement('canvas');
+            canvas.width = 400;
+            canvas.height = 550;
+            const ctx = canvas.getContext('2d');
+            
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, 400, 550);
+            ctx.fillStyle = "#111111";
+            ctx.font = "bold 16px Courier New";
+            ctx.textAlign = "center";
+            ctx.fillText("Mening Do'konim", 200, 30);
+            ctx.font = "12px Courier New";
+            ctx.fillText("Do'kon kodi: DK-1052", 200, 50);
+            ctx.fillText("Chek: #" + Math.floor(Math.random() * 9000 + 1000) + " | " + new Date().toLocaleDateString('uz-UZ'), 200, 70);
+            
+            ctx.fillRect(20, 85, 360, 1);
+            ctx.textAlign = "left";
+            ctx.font = "bold 13px Courier New";
+            ctx.fillText("Mijoz: " + document.getElementById('rcClientName').innerText, 25, 105);
+            ctx.fillRect(20, 115, 360, 1);
+            
+            ctx.font = "12px Courier New";
+            ctx.fillText("Savdo amali: " + document.getElementById('rcTotalSum').innerText, 25, 140);
+            ctx.fillText("To'landi:     " + document.getElementById('rcPaidSum').innerText, 25, 165);
+            
+            const debtVal = document.getElementById('rcDebtSum').innerText;
+            if (debtVal && debtVal !== "0 so'm") {
+                ctx.font = "bold 13px Courier New";
+                ctx.fillText("NASIYA (QARZ): " + debtVal, 25, 195);
+            }
+            
+            ctx.fillRect(20, 220, 360, 2);
+            ctx.textAlign = "center";
+            ctx.font = "12px Courier New";
+            ctx.fillText("Xaridingiz uchun tashakkur!", 200, 245);
+            ctx.font = "16px monospace";
+            ctx.fillText("||| |||| | ||||| |||", 200, 275);
+            ctx.font = "10px Courier New";
+            ctx.fillText("Voice2Deal AI * Bozor Kassa Tizimi", 200, 300);
+
+            const link = document.createElement('a');
+            link.download = `Chek_${client}_${Date.now()}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            alert("✅ Chek rasmi muvaffaqiyatli saqlandi!");
+        }
+
+        function copyReceiptText() {
+            const paper = document.getElementById('thermalReceiptPaper');
+            navigator.clipboard.writeText(paper.innerText);
+            alert("✅ Kvitansiya matni nusxalandi!");
+        }
+
+        // =========================================================================
+        // 2. Muloyim Telegram Eslatma Generator Logic
+        // =========================================================================
+        function sendReminder(name, sum, dueDate = "") {
+            const formattedSum = Number(String(sum).replace(/\s+/g, '')).toLocaleString('uz-UZ');
+            const dueText = dueDate ? ` Qaytarish muddati: ${dueDate}.` : "";
+            
+            const politeText = `Assalomu alaykum, hurmatli ${name}!\n\n` +
+                `Do'konimizdan olingan mahsulotlar uchun ${formattedSum} so'm qarz muddati yetib keldi.${dueText}\n\n` +
+                `Iltimos, to'lovni o'zingizga qulay vaqtda amalga oshirishingizni so'raymiz. To'lovni do'konga kelib yoki qulay bo'lsa Click / Payme orqali yuborishingiz mumkin.\n\n` +
+                `Hamkorligingiz va ishonchingiz uchun katta tashakkur!`;
+
+            document.getElementById('reminderMessageText').value = politeText;
+            const modal = new bootstrap.Modal(document.getElementById('gentleReminderModal'));
+            modal.show();
+        }
+
+        function copyReminderText() {
+            const text = document.getElementById('reminderMessageText').value;
+            navigator.clipboard.writeText(text);
+            alert("✅ Eslatma matni nusxalandi!");
+        }
+
+        function shareReminderViaTelegram() {
+            const text = document.getElementById('reminderMessageText').value;
+            const shareUrl = "https://t.me/share/url?url=" + encodeURIComponent(text);
+            if (window.Telegram?.WebApp?.openTelegramLink) {
+                window.Telegram.WebApp.openTelegramLink(shareUrl);
+            } else {
+                window.open(shareUrl, '_blank');
+            }
+        }
+
+        // =========================================================================
+        // 3. Ovozli Tasdiqlash Dialoqi (Audio Confirmation Loop) Logic
+        // =========================================================================
+        function showAudioConfirmation(clientName, amount, opType = "nasiya") {
+            const formatted = Number(amount).toLocaleString('uz-UZ') + " so'm";
+            let opTitle = "📦 Nasiya: " + clientName;
+            if (opType === "sale") opTitle = "💰 Naqd savdo: " + clientName;
+            if (opType === "debt_payment") opTitle = "💵 Qarz to'lovi: " + clientName;
+
+            document.getElementById('confirmCardTitle').innerText = opTitle;
+            document.getElementById('confirmCardAmount').innerText = formatted;
+            document.getElementById('confirmCardQuestion').innerText = "To'g'rimi? Kassaga kiritilsinmi?";
+
+            const modal = new bootstrap.Modal(document.getElementById('audioConfirmModal'));
+            modal.show();
+        }
+
+        function approveTradeAction() {
+            bootstrap.Modal.getInstance(document.getElementById('audioConfirmModal'))?.hide();
+            alert("✅ Savdo amali muvaffaqiyatli tasdiqlandi va kassa balansiga saqlandi!");
+        }
+
+        function editTradeAction() {
+            bootstrap.Modal.getInstance(document.getElementById('audioConfirmModal'))?.hide();
+            alert("✍️ Mikrofonni bosib to'g'ri summani qayta ayting (masalan: «Eshmat akaga 450 ming»)");
+        }
+
+        function cancelTradeAction() {
+            bootstrap.Modal.getInstance(document.getElementById('audioConfirmModal'))?.hide();
+            alert("🚫 Savdo amali bekor qilindi.");
         }
 
         function copyInvite() {
@@ -314,6 +1098,7 @@
         function payViaClick(sum) {
             alert("💳 " + sum + " so'mlik to'lov uchun Click / Payme ochilmoqda...");
         }
+
 
         // Chart.js init
         const ctx = document.getElementById('salesChart').getContext('2d');
@@ -347,6 +1132,463 @@
                 }
             }
         });
+
+        // =========================================================================
+        // Engine №10: 3D Jarvis Neural Voice Orb (Web Audio API & 3D Fibonacci)
+        // =========================================================================
+        class JarvisVoiceOrb {
+            constructor(canvasId) {
+                this.canvas = document.getElementById(canvasId);
+                if (!this.canvas) return;
+                this.ctx = this.canvas.getContext('2d');
+
+                this.particleCount = 380; // 350+ glowing particles
+                this.particles = [];
+                this.goldenAngle = Math.PI * (3 - Math.sqrt(5)); // Golden angle ~2.3999632 rad
+
+                this.rotX = 0.25;
+                this.rotY = 0;
+                this.rotSpeedX = 0.0025;
+                this.rotSpeedY = 0.0075;
+
+                this.baseRadius = 75;
+                this.currentRadius = 75;
+                this.fov = 300;
+                this.cameraDist = 260;
+
+                // Web Audio API State
+                this.audioCtx = null;
+                this.analyser = null;
+                this.micStream = null;
+                this.audioData = null;
+                this.isListening = false;
+                this.isSimulated = false;
+
+                // Frequency Energy Amplitudes
+                this.bass = 0;
+                this.mids = 0;
+                this.treble = 0;
+                this.avgEnergy = 0;
+
+                // Interactive Touch/Mouse Drag
+                this.isDragging = false;
+                this.lastPointerX = 0;
+                this.lastPointerY = 0;
+                this.dragVelX = 0;
+                this.dragVelY = 0;
+
+                // FPS Performance Tracker
+                this.frameCount = 0;
+                this.fpsTimer = performance.now();
+                this.fps = 60;
+
+                this.initParticles();
+                this.setupEvents();
+                this.resize();
+
+                this.animate = this.animate.bind(this);
+                requestAnimationFrame(this.animate);
+            }
+
+            initParticles() {
+                this.particles = [];
+                for (let i = 0; i < this.particleCount; i++) {
+                    // Fibonacci sphere distribution
+                    const y = 1 - (i / (this.particleCount - 1)) * 2; // from +1 to -1
+                    const radiusAtY = Math.sqrt(Math.max(0, 1 - y * y));
+                    const theta = this.goldenAngle * i;
+
+                    const x = Math.cos(theta) * radiusAtY;
+                    const z = Math.sin(theta) * radiusAtY;
+
+                    // Futuristic Glowing Cyan, Emerald & Sapphire Color Palette
+                    const ratio = i / this.particleCount;
+                    let hue, sat, light;
+                    if (ratio < 0.60) {
+                        // Neon Cyan / Electric Blue (185 - 205)
+                        hue = 186 + Math.random() * 20;
+                        sat = 90 + Math.random() * 10;
+                        light = 55 + Math.random() * 25;
+                    } else if (ratio < 0.88) {
+                        // Glowing Emerald / Mint (150 - 170)
+                        hue = 152 + Math.random() * 20;
+                        sat = 88 + Math.random() * 12;
+                        light = 50 + Math.random() * 25;
+                    } else {
+                        // Radiant Electric Violet / Blue (220 - 240)
+                        hue = 222 + Math.random() * 20;
+                        sat = 92 + Math.random() * 8;
+                        light = 65 + Math.random() * 20;
+                    }
+
+                    this.particles.push({
+                        baseX: x, baseY: y, baseZ: z,
+                        hue, sat, light,
+                        baseSize: 1.5 + Math.random() * 1.5,
+                        phase: Math.random() * Math.PI * 2,
+                        orbitSpeed: 0.6 + Math.random() * 0.8
+                    });
+                }
+            }
+
+            resize() {
+                if (!this.canvas || !this.canvas.parentElement) return;
+                const rect = this.canvas.parentElement.getBoundingClientRect();
+                const dpr = Math.min(window.devicePixelRatio || 1, 2);
+                this.canvas.width = rect.width * dpr;
+                this.canvas.height = rect.height * dpr;
+                this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+                this.ctx.scale(dpr, dpr);
+                this.width = rect.width;
+                this.height = rect.height;
+                this.centerX = this.width / 2;
+                this.centerY = this.height / 2;
+                this.baseRadius = Math.min(this.width, this.height) * 0.31;
+            }
+
+            setupEvents() {
+                window.addEventListener('resize', () => this.resize());
+
+                const c = this.canvas;
+                c.addEventListener('pointerdown', (e) => {
+                    this.isDragging = true;
+                    this.lastPointerX = e.clientX;
+                    this.lastPointerY = e.clientY;
+                    this.dragVelX = 0;
+                    this.dragVelY = 0;
+                    try { c.setPointerCapture(e.pointerId); } catch (_) {}
+                });
+
+                c.addEventListener('pointermove', (e) => {
+                    if (!this.isDragging) return;
+                    const dx = e.clientX - this.lastPointerX;
+                    const dy = e.clientY - this.lastPointerY;
+                    this.rotY += dx * 0.009;
+                    this.rotX += dy * 0.009;
+                    this.dragVelX = dx * 0.003;
+                    this.dragVelY = dy * 0.003;
+                    this.lastPointerX = e.clientX;
+                    this.lastPointerY = e.clientY;
+                });
+
+                const stopDrag = (e) => {
+                    if (this.isDragging) {
+                        this.isDragging = false;
+                        try { c.releasePointerCapture(e.pointerId); } catch (_) {}
+                    }
+                };
+                c.addEventListener('pointerup', stopDrag);
+                c.addEventListener('pointercancel', stopDrag);
+            }
+
+            async toggleMic() {
+                const statusBadge = document.getElementById('jarvisStatusBadge');
+                const micBtn = document.getElementById('jarvisMicBtn');
+                const micLabel = document.getElementById('jarvisMicLabel');
+                const micIcon = document.getElementById('jarvisMicIcon');
+                const speechText = document.getElementById('jarvisSpeechText');
+
+                if (this.isListening) {
+                    // Stop Listening
+                    this.stopAudio();
+                    if (statusBadge) {
+                        statusBadge.className = 'badge jarvis-status-badge';
+                        statusBadge.innerHTML = '<span class="jarvis-pulse-dot"></span> Jarvis Core: Active';
+                    }
+                    if (micBtn) micBtn.classList.remove('active-recording');
+                    if (micLabel) micLabel.innerText = "🎙️ Ovozni Tahlil Qilish / Speak";
+                    if (micIcon) micIcon.className = "fa-solid fa-microphone-lines me-2";
+                    if (speechText) speechText.innerText = 'Ovozli buyruq: "Rustam akaga 350 ming nasiya yoz"';
+                    return;
+                }
+
+                // Attempt to request real microphone
+                try {
+                    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                        throw new Error("getUserMedia not supported in this environment");
+                    }
+
+                    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                    if (!AudioContextClass) {
+                        throw new Error("AudioContext not supported");
+                    }
+                    this.audioCtx = new AudioContextClass();
+                    if (this.audioCtx.state === 'suspended') {
+                        await this.audioCtx.resume();
+                    }
+
+                    this.micStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+                    // Web Audio API: AnalyserNode setup with getByteFrequencyData
+                    this.analyser = this.audioCtx.createAnalyser();
+                    this.analyser.fftSize = 256;
+                    this.analyser.smoothingTimeConstant = 0.75;
+                    this.audioData = new Uint8Array(this.analyser.frequencyBinCount);
+
+                    const source = this.audioCtx.createMediaStreamSource(this.micStream);
+                    source.connect(this.analyser);
+
+                    this.isListening = true;
+                    this.isSimulated = false;
+
+                    if (statusBadge) {
+                        statusBadge.className = 'badge jarvis-status-badge listening';
+                        statusBadge.innerHTML = '<span class="jarvis-pulse-dot"></span> Jarvis: Jonli Mikrofon';
+                    }
+                    if (micBtn) micBtn.classList.add('active-recording');
+                    if (micLabel) micLabel.innerText = "⏹️ Eshitilmoqda... (To'xtatish)";
+                    if (micIcon) micIcon.className = "fa-solid fa-waveform-lines me-2";
+                    if (speechText) speechText.innerText = "🎙️ Jonli mikrofon ulangan! Gapiring, AI tahlil qilmoqda...";
+
+                } catch (err) {
+                    console.warn("Real microphone access failed, switching to procedural voice pulse fallback:", err);
+                    // Graceful realistic simulated voice pulse fallback
+                    this.isListening = true;
+                    this.isSimulated = true;
+                    this.audioData = new Uint8Array(128);
+
+                    if (statusBadge) {
+                        statusBadge.className = 'badge jarvis-status-badge listening';
+                        statusBadge.innerHTML = '<span class="jarvis-pulse-dot"></span> Jarvis: Simulyatsiya (Demo)';
+                    }
+                    if (micBtn) micBtn.classList.add('active-recording');
+                    if (micLabel) micLabel.innerText = "⏹️ Simulyatsiyani To'xtatish";
+                    if (micIcon) micIcon.className = "fa-solid fa-wave-square me-2";
+                    if (speechText) speechText.innerText = "⚡ Simulyatsiya qilingan neyron ovoz impulslari faollashdi!";
+                }
+            }
+
+            stopAudio() {
+                this.isListening = false;
+                this.isSimulated = false;
+                if (this.micStream) {
+                    this.micStream.getTracks().forEach(track => track.stop());
+                    this.micStream = null;
+                }
+                if (this.audioCtx && this.audioCtx.state !== 'closed') {
+                    this.audioCtx.close().catch(() => {});
+                    this.audioCtx = null;
+                }
+                this.bass = 0;
+                this.mids = 0;
+                this.treble = 0;
+                this.avgEnergy = 0;
+            }
+
+            updateAudioData(now) {
+                if (this.isListening && !this.isSimulated && this.analyser) {
+                    this.analyser.getByteFrequencyData(this.audioData);
+
+                    // Bass bins 1-10 (~20 to 250 Hz)
+                    let bSum = 0;
+                    for (let i = 1; i <= 10; i++) bSum += this.audioData[i];
+                    const targetBass = (bSum / 10) / 255;
+
+                    // Mids bins 11-45 (~250 to 2000 Hz)
+                    let mSum = 0;
+                    for (let i = 11; i <= 45; i++) mSum += this.audioData[i];
+                    const targetMids = (mSum / 35) / 255;
+
+                    // Treble bins 46-100 (~2000 to 8000 Hz)
+                    let tSum = 0;
+                    for (let i = 46; i <= 100; i++) tSum += this.audioData[i];
+                    const targetTreble = (tSum / 55) / 255;
+
+                    this.bass += (targetBass - this.bass) * 0.35;
+                    this.mids += (targetMids - this.mids) * 0.35;
+                    this.treble += (targetTreble - this.treble) * 0.35;
+                    this.avgEnergy = (this.bass * 0.5 + this.mids * 0.3 + this.treble * 0.2);
+
+                } else if (this.isListening && this.isSimulated) {
+                    // Procedural realistic human speech cadence generator
+                    const t = now * 0.0032;
+                    const syllableCadence = Math.sin(t * 3.4) * 0.5 + Math.sin(t * 1.8) * 0.3 + Math.cos(t * 5.2) * 0.2;
+                    const speechBurst = Math.max(0, syllableCadence) * (0.65 + 0.35 * Math.sin(t * 8));
+
+                    const targetBass = speechBurst * 0.78 + Math.sin(t * 4.2) * 0.12 + 0.1;
+                    const targetMids = speechBurst * 0.88 + Math.cos(t * 6.8) * 0.15 + 0.08;
+                    const targetTreble = speechBurst * 0.65 + Math.sin(t * 11) * 0.2 + 0.06;
+
+                    this.bass += (targetBass - this.bass) * 0.25;
+                    this.mids += (targetMids - this.mids) * 0.25;
+                    this.treble += (targetTreble - this.treble) * 0.25;
+                    this.avgEnergy = (this.bass * 0.5 + this.mids * 0.3 + this.treble * 0.2);
+
+                } else {
+                    // Idle breathing pulse
+                    const breath = (Math.sin(now * 0.002) + 1) * 0.06;
+                    this.bass += (breath - this.bass) * 0.06;
+                    this.mids += (breath * 0.5 - this.mids) * 0.06;
+                    this.treble += (breath * 0.3 - this.treble) * 0.06;
+                    this.avgEnergy = this.bass * 0.5;
+                }
+
+                // Update Frequency Meters
+                const bEl = document.getElementById('freqFillBass');
+                const mEl = document.getElementById('freqFillMids');
+                const tEl = document.getElementById('freqFillTreble');
+                if (bEl) bEl.style.width = Math.min(100, Math.max(5, this.bass * 100)) + '%';
+                if (mEl) mEl.style.width = Math.min(100, Math.max(5, this.mids * 100)) + '%';
+                if (tEl) tEl.style.width = Math.min(100, Math.max(5, this.treble * 100)) + '%';
+            }
+
+            animate(now) {
+                requestAnimationFrame(this.animate);
+
+                // Calculate actual FPS
+                this.frameCount++;
+                if (now - this.fpsTimer >= 500) {
+                    this.fps = Math.round((this.frameCount * 1000) / (now - this.fpsTimer));
+                    this.frameCount = 0;
+                    this.fpsTimer = now;
+                    const fpsEl = document.getElementById('jarvisFpsVal');
+                    if (fpsEl) fpsEl.innerText = this.fps;
+                }
+
+                this.updateAudioData(now);
+
+                // Modulate rotation speed dynamically based on voice audio energy
+                const speedBoost = 1 + this.avgEnergy * 3.0;
+                if (!this.isDragging) {
+                    this.rotY += this.rotSpeedY * speedBoost;
+                    this.rotX += this.rotSpeedX * speedBoost;
+                    this.rotY += this.dragVelX;
+                    this.rotX += this.dragVelY;
+                    this.dragVelX *= 0.93;
+                    this.dragVelY *= 0.93;
+                }
+
+                const ctx = this.ctx;
+                ctx.clearRect(0, 0, this.width, this.height);
+
+                // Dynamic Radial Neon Backdrop Glow
+                const glowRadius = this.baseRadius * (1.25 + this.bass * 0.7);
+                const grad = ctx.createRadialGradient(
+                    this.centerX, this.centerY, 4,
+                    this.centerX, this.centerY, glowRadius
+                );
+                grad.addColorStop(0, `rgba(56, 189, 248, ${0.16 + this.bass * 0.3})`);
+                grad.addColorStop(0.5, `rgba(16, 185, 129, ${0.08 + this.mids * 0.2})`);
+                grad.addColorStop(1, 'rgba(6, 11, 24, 0)');
+                ctx.fillStyle = grad;
+                ctx.beginPath();
+                ctx.arc(this.centerX, this.centerY, glowRadius, 0, Math.PI * 2);
+                ctx.fill();
+
+                // 3D Fibonacci Sphere Projection
+                const dynamicRadius = this.baseRadius * (1 + this.bass * 0.45 + Math.sin(now * 0.0022) * 0.04);
+                const cosY = Math.cos(this.rotY);
+                const sinY = Math.sin(this.rotY);
+                const cosX = Math.cos(this.rotX);
+                const sinX = Math.sin(this.rotX);
+
+                const projected = [];
+                const timeSec = now * 0.001;
+
+                for (let i = 0; i < this.particles.length; i++) {
+                    const p = this.particles[i];
+
+                    // Modulate particle 3D radii via harmonic Mids waves
+                    const displacement = Math.sin(timeSec * 5.5 * p.orbitSpeed + p.phase) * (this.mids * 0.3 + 0.02);
+                    const r = dynamicRadius * (1 + displacement);
+
+                    const x0 = p.baseX * r;
+                    const y0 = p.baseY * r;
+                    const z0 = p.baseZ * r;
+
+                    // Rotate around Y
+                    const x1 = x0 * cosY + z0 * sinY;
+                    const z1 = -x0 * sinY + z0 * cosY;
+
+                    // Rotate around X
+                    const y2 = y0 * cosX - z1 * sinX;
+                    const z2 = y0 * sinX + z1 * cosX;
+
+                    // 3D Perspective Projection
+                    const scale = this.fov / (this.fov + this.cameraDist + z2);
+                    const projX = this.centerX + x1 * scale;
+                    const projY = this.centerY + y2 * scale;
+
+                    // Depth calculation & Treble luminescence modulation
+                    const normZ = (z2 + r) / (2 * r); // 0 (back) to 1 (front)
+                    const alpha = Math.min(1, Math.max(0.12, normZ * 0.78 + this.treble * 0.45));
+                    const size = Math.max(1, p.baseSize * scale * (1 + this.treble * 0.85));
+
+                    projected.push({
+                        x: projX,
+                        y: projY,
+                        z: z2,
+                        alpha,
+                        size,
+                        hue: p.hue,
+                        sat: p.sat,
+                        light: p.light + this.treble * 28
+                    });
+                }
+
+                // Depth sort (render back particles first, front particles last)
+                projected.sort((a, b) => a.z - b.z);
+
+                // Neural interconnecting lines between closest particles during voice activity
+                if (this.avgEnergy > 0.12) {
+                    ctx.lineWidth = 0.75;
+                    const maxDist = 38 * (1 + this.avgEnergy * 0.4);
+                    const lineAlpha = Math.min(0.4, this.avgEnergy * 0.45);
+                    ctx.strokeStyle = `rgba(56, 189, 248, ${lineAlpha})`;
+
+                    for (let i = 0; i < projected.length; i += 4) {
+                        const p1 = projected[i];
+                        for (let j = i + 1; j < Math.min(i + 8, projected.length); j++) {
+                            const p2 = projected[j];
+                            const dx = p1.x - p2.x;
+                            const dy = p1.y - p2.y;
+                            const dist = Math.hypot(dx, dy);
+                            if (dist < maxDist) {
+                                ctx.beginPath();
+                                ctx.moveTo(p1.x, p1.y);
+                                ctx.lineTo(p2.x, p2.y);
+                                ctx.stroke();
+                            }
+                        }
+                    }
+                }
+
+                // Render 3D glowing particles
+                for (let i = 0; i < projected.length; i++) {
+                    const p = projected[i];
+
+                    // Outer bloom disk for foreground particles
+                    if (p.z > 0 && p.size > 2.0) {
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.size * 2.2, 0, Math.PI * 2);
+                        ctx.fillStyle = `hsla(${p.hue}, ${p.sat}%, ${p.light}%, ${p.alpha * 0.25})`;
+                        ctx.fill();
+                    }
+
+                    // Solid core particle
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fillStyle = `hsla(${p.hue}, ${p.sat}%, ${p.light}%, ${p.alpha})`;
+                    ctx.fill();
+                }
+            }
+        }
+
+        // Global Jarvis Voice Orb Controller
+        let jarvisOrbInstance = null;
+        function toggleJarvisVoice() {
+            if (jarvisOrbInstance) {
+                jarvisOrbInstance.toggleMic();
+            }
+        }
+
+        // Initialize on DOMContentLoaded or window load
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                jarvisOrbInstance = new JarvisVoiceOrb('jarvisOrbCanvas');
+            });
+        } else {
+            jarvisOrbInstance = new JarvisVoiceOrb('jarvisOrbCanvas');
+        }
     </script>
 </body>
 </html>

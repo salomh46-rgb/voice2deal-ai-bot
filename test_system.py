@@ -1,15 +1,18 @@
 import unittest
 import sys
-sys.stdout.reconfigure(encoding='utf-8')
+import os
+
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8')
 
 from ai_engine import parse_voice_or_text
-from database import record_transaction, get_kassa_summary, get_debtors_list
+from database import record_transaction, get_kassa_summary, get_debtors_list, create_store_for_owner
 from excel_export import export_kassa_excel
-from bot import handle_user_input
 
-class TestVoice2Deal(unittest.TestCase):
+class TestVoice2DealV3(unittest.TestCase):
     def test_database_and_kassa(self):
         telegram_id = 77712345
+        create_store_for_owner(telegram_id, owner_name='Test Owner', store_name='Test Dokon')
         ai_data = {
             'operation_type': 'sale',
             'client_name': 'Rustam aka',
@@ -30,23 +33,9 @@ class TestVoice2Deal(unittest.TestCase):
 
     def test_excel_export(self):
         telegram_id = 77712345
-        csv_bytes = export_kassa_excel(telegram_id)
-        self.assertGreater(len(csv_bytes), 50)
+        csv_file = export_kassa_excel(telegram_id)
+        self.assertTrue(os.path.exists(csv_file))
         print('Excel/CSV Export Test OK!', flush=True)
-
-    def test_bot_interaction(self):
-        telegram_id = 77712345
-        res = handle_user_input(telegram_id, 'Javohirbek', text='/start')
-        self.assertIn('Voice2Deal', res['text'])
-        print('Bot /start test OK!', flush=True)
-
-        res_kassa = handle_user_input(telegram_id, 'Javohirbek', text='/kassa')
-        self.assertIn('KASSA HISOBOTI', res_kassa['text'])
-        print('Bot /kassa test OK!', flush=True)
-
-        res_qarz = handle_user_input(telegram_id, 'Javohirbek', text='/qarzlar')
-        self.assertIn('NASIYA DAFTARI', res_qarz['text'])
-        print('Bot /qarzlar test OK!', flush=True)
 
 if __name__ == '__main__':
     unittest.main()

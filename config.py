@@ -6,7 +6,7 @@ try:
 except ImportError:
     pass
 
-TELEGRAM_TOKEN = os.environ.get('TELEGRAM_TOKEN', '8620702517:AAFiNgQ2HB3o2yXpsuEahNc4byJYte5amHc')
+TELEGRAM_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", os.environ.get("TELEGRAM_TOKEN", ""))
 TELEGRAM_API = f'https://api.telegram.org/bot{TELEGRAM_TOKEN}'
 TELEGRAM_FILE_API = f'https://api.telegram.org/file/bot{TELEGRAM_TOKEN}'
 

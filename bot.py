@@ -31,8 +31,12 @@ if hasattr(sys.stderr, 'reconfigure'):
 
 import threading
 from datetime import datetime, timedelta
-from ai_engine import parse_voice_or_text, generate_gentle_reminder, generate_ai_business_report, answer_ai_support
-from receipt_generator import generate_thermal_receipt_text
+from ai_engine import (
+    parse_voice_or_text, generate_gentle_reminder, 
+    generate_ai_business_report, answer_ai_support, 
+    generate_telegram_share_link
+)
+from receipt_generator import generate_thermal_receipt_text, generate_thermal_receipt_html
 from database import (
     get_seller_shift_summary,
     record_transaction, get_kassa_summary, get_debtors_list, 
@@ -49,19 +53,96 @@ from excel_export import export_kassa_excel
 try:
     from config import TELEGRAM_TOKEN, TELEGRAM_API, TELEGRAM_FILE_API, ADMIN_ID
 except ImportError:
-    TELEGRAM_TOKEN = "8620702517:AAFiNgQ2HB3o2yXpsuEahNc4byJYte5amHc"
+    TELEGRAM_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", os.getenv("TELEGRAM_TOKEN", ""))
     TELEGRAM_API = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}"
     TELEGRAM_FILE_API = f"https://api.telegram.org/file/bot{TELEGRAM_TOKEN}"
     ADMIN_ID = 1320855100
 
 # Foydalanuvchi kutish holatlari (State memory)
 USER_STATES = {} # {chat_id: "waiting_for_store_code" | "waiting_for_phone" | ...}
+PENDING_CONFIRMATIONS = {} # {chat_id: {"operations": [...], "raw_text": "...", "store_id": 1, ...}}
 
 def format_number(n):
     try:
-        return f"{int(n):,}".replace(",", " ")
+        return f"{int(round(float(n))):,}".replace(",", " ")
     except Exception:
         return str(n)
+
+def format_trade_confirmation_card(operations_list):
+    """
+    Audio Confirmation Loop: Savdogarga xatolik bo'lmasligi uchun tasdiqlash kartochkasi.
+    Masalan:
+    📦 Nasiya: Eshmat aka, 500 000 so'm. To'g'rimi?
+    [✅ Tasdiqlash] [❌ Tahrirlash]
+    [🚫 Bekor qilish]
+    """
+    if not operations_list:
+        return "⚠️ Tasdiqlash uchun savdo amali topilmadi.", None
+
+    if len(operations_list) == 1:
+        op = operations_list[0]
+        op_type = op.get("operation_type")
+        client = op.get("client_name") or "Noma'lum"
+        total = float(op.get("total_amount") or 0)
+        debt = float(op.get("debt_amount") or 0)
+        paid = float(op.get("paid_amount") or 0)
+        items = op.get("items") or []
+
+        if op_type == "inventory_in":
+            items_desc = ", ".join([f"{it.get('qty', 1)} ta {it.get('name', 'Tovar')}" for it in items]) if items else "Tovar kirimi"
+            sum_val = format_number(total or (items[0].get('price', 0) if items else 0))
+            text = f"📥 <b>Ombor kirimi:</b> {items_desc}, <b>{sum_val} so'm</b>.\n\nTo'g'rimi?"
+        elif op_type in ["debt_give", "nasiya"] or debt > 0:
+            sum_val = format_number(debt if debt > 0 else total)
+            text = f"📦 <b>Nasiya:</b> {client}, <b>{sum_val} so'm</b>.\n\nTo'g'rimi?"
+        elif op_type == "debt_payment":
+            sum_val = format_number(paid if paid > 0 else total)
+            text = f"💵 <b>Qarz to'lovi:</b> {client}, <b>{sum_val} so'm</b>.\n\nTo'g'rimi?"
+        elif op_type == "expense":
+            sum_val = format_number(total)
+            text = f"📉 <b>Xarajat:</b> {client}, <b>{sum_val} so'm</b>.\n\nTo'g'rimi?"
+        else:
+            sum_val = format_number(total if total > 0 else paid)
+            text = f"💰 <b>Naqd savdo:</b> {client}, <b>{sum_val} so'm</b>.\n\nTo'g'rimi?"
+    else:
+        lines = []
+        for idx, op in enumerate(operations_list, 1):
+            op_type = op.get("operation_type")
+            client = op.get("client_name") or "Xaridor"
+            total = float(op.get("total_amount") or 0)
+            debt = float(op.get("debt_amount") or 0)
+            paid = float(op.get("paid_amount") or 0)
+            if op_type in ["debt_give", "nasiya"] or debt > 0:
+                s = format_number(debt if debt > 0 else total)
+                lines.append(f"{idx}. 📦 <b>Nasiya:</b> {client} — {s} so'm")
+            elif op_type == "debt_payment":
+                s = format_number(paid if paid > 0 else total)
+                lines.append(f"{idx}. 💵 <b>Qarz to'lovi:</b> {client} — {s} so'm")
+            elif op_type == "inventory_in":
+                lines.append(f"{idx}. 📥 <b>Ombor kirimi:</b> {client}")
+            elif op_type == "expense":
+                s = format_number(total)
+                lines.append(f"{idx}. 📉 <b>Xarajat:</b> {client} — {s} so'm")
+            else:
+                s = format_number(total if total > 0 else paid)
+                lines.append(f"{idx}. 💰 <b>Naqd savdo:</b> {client} — {s} so'm")
+
+        text = f"📋 <b>Savdo amallari ({len(operations_list)} ta):</b>\n"
+        text += "\n".join(lines) + "\n\n<b>To'g'rimi?</b>"
+
+    keyboard = {
+        "inline_keyboard": [
+            [
+                {"text": "✅ Tasdiqlash", "callback_data": "confirm_trade_yes"},
+                {"text": "❌ Tahrirlash", "callback_data": "confirm_trade_edit"}
+            ],
+            [
+                {"text": "🚫 Bekor qilish", "callback_data": "confirm_trade_cancel"}
+            ]
+        ]
+    }
+    return text, keyboard
+
 
 def send_telegram_request(method, data):
     url = f"{TELEGRAM_API}/{method}"
@@ -526,18 +607,53 @@ def handle_update(update):
                         store_name=store_name
                     )
                     record_reminder_sent(client_id)
+                    share_url = generate_telegram_share_link(reminder_text)
                     
-                    msg = f"🔔 <b>{client['name']} uchun tayyor xushmuomala eslatma:</b>\n\n"
+                    msg = f"🔔 <b>{client['name']} uchun xushmuomala eslatma matni:</b>\n\n"
                     msg += f"<blockquote>{reminder_text}</blockquote>\n\n"
-                    msg += "📲 <i>Ushbu matndan nusxa olib, mijozga Telegram yoki SMS orqali yuborishingiz mumkin.</i>"
+                    msg += "📲 <i>Pastdagi tugma orqali eslatmani to'g'ridan-to'g'ri mijozga Telegramda yuborishingiz mumkin:</i>"
                     
+                    remind_kb = {
+                        "inline_keyboard": [
+                            [{"text": "🚀 Mijozga Telegram orqali yuborish", "url": share_url}],
+                            [{"text": "🔄 Qayta generatsiya qilish", "callback_data": f"remind_{client_id}"}]
+                        ]
+                    }
                     answer_callback_query(cb_id, "Eslatma matni tayyorlandi!")
-                    send_message(chat_id, msg)
+                    send_message(chat_id, msg, reply_markup=remind_kb)
                 else:
                     answer_callback_query(cb_id, "Mijoz topilmadi!", show_alert=True)
             except Exception as e:
                 answer_callback_query(cb_id, f"Xatolik: {e}")
             return
+
+        elif data == "confirm_trade_yes":
+            pending = PENDING_CONFIRMATIONS.pop(chat_id, None)
+            USER_STATES.pop(chat_id, None)
+            if not pending:
+                answer_callback_query(cb_id, "Amal muddati tugagan yoki tasdiqlangan.", show_alert=True)
+                return
+            answer_callback_query(cb_id, "✅ Savdo tasdiqlandi!")
+            execute_confirmed_transactions(chat_id, pending)
+            return
+
+        elif data == "confirm_trade_edit":
+            USER_STATES[chat_id] = "waiting_for_trade_edit"
+            answer_callback_query(cb_id, "✏️ Tahrirlash rejimi")
+            send_message(
+                chat_id, 
+                "✍️ <i>Iltimos, to'g'rilangan ma'lumotni ovozda ayting yoki yozib yuboring:</i>\n"
+                "<i>(Masalan: «Eshmat akaga 450 ming nasiyaga berdim»)</i>"
+            )
+            return
+
+        elif data == "confirm_trade_cancel":
+            PENDING_CONFIRMATIONS.pop(chat_id, None)
+            USER_STATES.pop(chat_id, None)
+            answer_callback_query(cb_id, "🚫 Savdo bekor qilindi", show_alert=True)
+            send_message(chat_id, "🚫 <i>Savdo amali bekor qilindi. Kassa o'zgarishsiz qoldi.</i>")
+            return
+
 
         elif data == "plan_basic_free":
             answer_callback_query(cb_id, "Siz Bepul Basic tarifidasiz (Oyiga 30 ta savdo)!", show_alert=True)
@@ -1384,16 +1500,50 @@ def handle_update(update):
     store = ctx["store"]
     store_id = store["id"] if store else None
 
+    # Agar 1 ta dona amal bo'lib, ma'lumot yetarli bo'lmasa:
+    if len(operations_list) == 1:
+        op_data = operations_list[0]
+        op_type = op_data.get("operation_type")
+        items = op_data.get("items") or []
+        if op_type == "other" and not items and not op_data.get("total_amount") and not op_data.get("paid_amount"):
+            send_message(chat_id, "⚠️ Xabarni tushunib bo'lmadi. Iltimos, tovar nomi, narxi yoki miqdorini ayting.\nMasalan: <i>«Skladga 50 ta kola 12 mingdan qo'sh»</i>")
+            return
+
+    # Audio Confirmation Loop: Foydalanuvchiga avval tasdiqlash kartochkasini chiqaramiz!
+    PENDING_CONFIRMATIONS[chat_id] = {
+        "operations": operations_list,
+        "raw_text": text or (voice and "Ovozli savdo") or "Savdo amali",
+        "store_id": store_id,
+        "timestamp": time.time()
+    }
+    if USER_STATES.get(chat_id) == "waiting_for_trade_edit":
+        USER_STATES.pop(chat_id, None)
+
+    card_text, kb = format_trade_confirmation_card(operations_list)
+    send_message(chat_id, card_text, reply_markup=kb)
+    return
+
+def execute_confirmed_transactions(chat_id, pending_data):
+    """
+    Savdogar tasdiqlaganidan so'ng operatsiyalarni bazaga saqlaydi va natijaviy cheklarni chiqaradi.
+    """
+    if not pending_data:
+        send_message(chat_id, "⚠️ Tasdiqlash muddati tugagan yoki amallar topilmadi. Qaytadan urinib ko'ring.")
+        return
+
+    operations_list = pending_data.get("operations", [])
+    store_id = pending_data.get("store_id")
+    raw_text = pending_data.get("raw_text", "Voice Message")
+
+    if not operations_list:
+        send_message(chat_id, "⚠️ Saqlash uchun amallar topilmadi.")
+        return
+
     # Agar 1 ta dona amal bo'lsa:
     if len(operations_list) == 1:
         op_data = operations_list[0]
         op_type = op_data.get("operation_type")
         items = op_data.get("items") or []
-
-        # Agar hech qanday summa, tovar yoki amal topilmasa:
-        if op_type == "other" and not items and not op_data.get("total_amount") and not op_data.get("paid_amount"):
-            send_message(chat_id, "⚠️ Xabarni tushunib bo'lmadi. Iltimos, tovar nomi, narxi yoki miqdorini ayting.\nMasalan: <i>«Skladga 50 ta kola 12 mingdan qo'sh»</i>")
-            return
 
         # Sklad kirim bo'lsa:
         if op_type == "inventory_in" and store_id:
@@ -1417,7 +1567,7 @@ def handle_update(update):
             return
 
         # Savdo / Qarz / To'lov saqlash:
-        res_tx = record_transaction(chat_id, op_data, raw_text=text or "Voice Message")
+        res_tx = record_transaction(chat_id, op_data, raw_text=raw_text)
         if res_tx:
             op_data["client_name"] = res_tx.get("client_name", op_data.get("client_name"))
             op_data["paid_amount"] = res_tx.get("paid", op_data.get("paid_amount"))
@@ -1437,7 +1587,13 @@ def handle_update(update):
                 if stock_alerts:
                     receipt_text += "\n\n" + "\n".join(stock_alerts)
             tx_id = res_tx.get("tx_id", 1)
-            inline_receipt_kb = {"inline_keyboard": [[{"text": "🧾 QR-kodli Chekni ko'rish", "callback_data": f"receipt_{tx_id}"}]]}
+            inline_receipt_kb = {
+                "inline_keyboard": [
+                    [
+                        {"text": "🧾 Termal Chek (58/80mm)", "callback_data": f"receipt_{tx_id}"}
+                    ]
+                ]
+            }
             send_message(chat_id, receipt_text, reply_markup=inline_receipt_kb)
         else:
             send_message(chat_id, "⚠️ Savdoni saqlashda xatolik yuz berdi. Iltimos, /start bosing.")
@@ -1466,7 +1622,7 @@ def handle_update(update):
             continue
 
         # Savdo / Qarz to'lash:
-        res_tx = record_transaction(chat_id, op_data, raw_text=text or "Batch Voice Message")
+        res_tx = record_transaction(chat_id, op_data, raw_text=raw_text)
         if res_tx:
             if op_type == "sale" and store_id:
                 decrement_inventory_on_sale(store_id, items)
@@ -1508,6 +1664,7 @@ def handle_update(update):
     
     markup = {"inline_keyboard": receipt_buttons[:4]} if receipt_buttons else None
     send_message(chat_id, batch_msg, reply_markup=markup)
+
 
 def run_auto_backup_daemon():
     def backup_worker():
