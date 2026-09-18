@@ -348,11 +348,13 @@ def format_receipt(ai_data):
 def handle_subscription_view(chat_id, ctx):
     store = ctx.get("store") or {}
     sub_info = check_subscription(store)
+    store_name = store.get("store_name") or "Mening do'konim"
+    store_code = store.get("store_code") or "Noma'lum"
     
     msg = "👑 <b>VOICE2DEAL — OBUNA VA TARIFLAR</b>\n"
     msg += "━━━━━━━━━━━━━━━━━━━━━━\n"
-    msg += f"🏪 <b>Do'kon:</b> {store.get('store_name', 'Mening do\'konim')}\n"
-    msg += f"🆔 <b>Do'kon Kodi:</b> <code>{store.get('store_code', 'Noma\'lum')}</code>\n"
+    msg += f"🏪 <b>Do'kon:</b> {store_name}\n"
+    msg += f"🆔 <b>Do'kon Kodi:</b> <code>{store_code}</code>\n"
     msg += f"📊 <b>Joriy holat:</b> {sub_info['status_text']}\n\n"
     msg += "💡 <i>Bitta qaytgan qarz butun yillik obuna narxini 10 barobar qoplaydi!</i>\n\n"
     
@@ -452,12 +454,13 @@ def handle_staff_view(chat_id, ctx):
         return
         
     store = ctx["store"]
-    store_code = store.get("store_code", "Noma'lum")
+    store_name = store.get("store_name") or "Mening do'konim"
+    store_code = store.get("store_code") or "Noma'lum"
     staff_list = get_store_staff(chat_id)
     
     msg = "👥 <b>XODIMLAR VA SOTUVCHILAR NAZORATI</b>\n"
     msg += "━━━━━━━━━━━━━━━━━━━━━━\n"
-    msg += f"🏪 <b>Do'kon:</b> {store.get('store_name', 'Mening do\'konim')}\n"
+    msg += f"🏪 <b>Do'kon:</b> {store_name}\n"
     msg += f"🆔 <b>Do'kon Kodi:</b> <code>{store_code}</code>\n"
     msg += f"🔗 <b>Sotuvchi ulanish havolasi:</b>\n<code>https://t.me/Ovozli_SavdoBOT?start={store_code}</code>\n\n"
     msg += f"<i>Sotuvchingiz ushbu havolani bossa yoki botga <code>{store_code}</code> kodini yozsa, do'koningizga avtomatik biriktiriladi.</i>\n\n"
@@ -1184,11 +1187,14 @@ def handle_update(update):
         role = ctx["role"]
         store = ctx["store"]
         
+        store_name = store.get("store_name") or "Mening do'konim"
+        store_code = store.get("store_code") or "Noma'lum"
+
         if role == "owner":
             start_msg = f"👋 <b>Assalomu alaykum, {sender_name}!</b>\n"
             start_msg += f"Siz <b>«Voice2Deal — Ovozli Savdo & Qarz Daftari AI»</b> tizimidasiz.\n\n"
-            start_msg += f"🏪 <b>Do'kon:</b> {store.get('store_name', 'Mening do\'konim')}\n"
-            start_msg += f"🆔 <b>Do'kon Kodi:</b> <code>{store.get('store_code', 'Noma\'lum')}</code>\n"
+            start_msg += f"🏪 <b>Do'kon:</b> {store_name}\n"
+            start_msg += f"🆔 <b>Do'kon Kodi:</b> <code>{store_code}</code>\n"
             start_msg += f"👤 <b>Rolingiz:</b> 👑 Do'kon Egasi (Xo'jayin)\n\n"
             start_msg += "🎙 <b>Qanday ishlatiladi?</b>\n"
             start_msg += "Shunchaki ovozli xabar (Voice) yuboring yoki yozing, masalan:\n"
@@ -1198,8 +1204,8 @@ def handle_update(update):
             send_message(chat_id, start_msg, reply_markup=get_main_keyboard(role="owner"))
         elif role == "seller":
             start_msg = f"👋 <b>Assalomu alaykum, {sender_name}!</b>\n"
-            start_msg += f"🏪 <b>Do'kon:</b> {store.get('store_name', 'Mening do\'konim')}\n"
-            start_msg += f"🆔 <b>Do'kon Kodi:</b> <code>{store.get('store_code', 'Noma\'lum')}</code>\n"
+            start_msg += f"🏪 <b>Do'kon:</b> {store_name}\n"
+            start_msg += f"🆔 <b>Do'kon Kodi:</b> <code>{store_code}</code>\n"
             start_msg += f"👤 <b>Rolingiz:</b> 💼 Sotuvchi\n\n"
             start_msg += "🎙 Istalgan savdo amalini ovoz yoki matn bilan yuboring, u avtomatik hisobga olinadi."
             send_message(chat_id, start_msg, reply_markup=get_main_keyboard(role="seller"))
@@ -1328,7 +1334,10 @@ def handle_update(update):
     if text in ["ℹ️ Mening do'konim"]:
         store = ctx["store"]
         if store:
-            send_message(chat_id, f"🏪 <b>Do'kon:</b> {store.get('store_name')}\n🆔 <b>Kodi:</b> <code>{store.get('store_code')}</code>\n👑 <b>Egasi:</b> {store.get('owner_name', 'Xo\'jayin')}\n💼 <b>Rolingiz:</b> Sotuvchi")
+            store_name = store.get("store_name") or "Mening do'konim"
+            store_code = store.get("store_code") or "Noma'lum"
+            owner_name = store.get("owner_name") or "Xo'jayin"
+            send_message(chat_id, f"🏪 <b>Do'kon:</b> {store_name}\n🆔 <b>Kodi:</b> <code>{store_code}</code>\n👑 <b>Egasi:</b> {owner_name}\n💼 <b>Rolingiz:</b> Sotuvchi")
         else:
             send_message(chat_id, "Siz hali hech qaysi do'konga biriktirilmagansiz. /rol buyrug'ini bosing.")
         return
