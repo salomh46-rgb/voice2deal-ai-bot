@@ -8,7 +8,7 @@ try:
     from config import GEMINI_API_KEY, GEMINI_MODELS as MODEL_CANDIDATES
 except ImportError:
     GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "AQ.Ab8RN6JVDYUVVHaR7Pwpce0JcIWqBjU35JQaTPnGpq3Qxg3Kvg")
-    MODEL_CANDIDATES = ["gemini-3.1-flash-lite", "gemini-3.1-flash-lite-preview", "gemini-3-flash-preview"]
+    MODEL_CANDIDATES = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"]
 
 SYSTEM_INSTRUCTION = """Siz O'zbekiston savdo do'konlari, kassa, ombor va qarz daftari uchun ixtisoslashgan ENG AQLLI OVOZLI AI YORDAMCHISIZ.
 
@@ -105,13 +105,17 @@ def parse_voice_or_text(text=None, audio_bytes=None, mime_type="audio/ogg"):
         }
     }
 
+    last_api_error = None
     for attempt in range(2):
         for model in MODEL_CANDIDATES:
             url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={GEMINI_API_KEY}"
             req = urllib.request.Request(
                 url,
                 data=json.dumps(payload).encode("utf-8"),
-                headers={"Content-Type": "application/json"}
+                headers={
+                    "Content-Type": "application/json",
+                    "x-goog-api-key": GEMINI_API_KEY
+                }
             )
             try:
                 res = urllib.request.urlopen(req, timeout=15)
@@ -119,17 +123,23 @@ def parse_voice_or_text(text=None, audio_bytes=None, mime_type="audio/ogg"):
                     res_json = json.loads(res.read().decode("utf-8"))
                     if res_json.get("candidates") and res_json["candidates"][0].get("content"):
                         raw_text = res_json["candidates"][0]["content"]["parts"][0]["text"]
-                        print(f"AI RAW RESPONSE: {raw_text[:300]}", flush=True)
+                        print(f"AI RAW RESPONSE ({model}): {raw_text[:300]}", flush=True)
                         parsed = parse_json_safely(raw_text)
                         if parsed:
                             return parsed
             except Exception as e:
                 err_str = str(e)
+                last_api_error = err_str
+                print(f"⚠️ Gemini API Error ({model}): {err_str}", flush=True)
                 if "429" in err_str:
                     time.sleep(1.0)
                 else:
                     time.sleep(0.2)
                 continue
+
+    if last_api_error:
+        print(f"❌ All Gemini models failed with error: {last_api_error}", flush=True)
+        return {"_error": "api_error", "message": last_api_error}
 
     return None
 
@@ -204,7 +214,10 @@ Talablar:
         req = urllib.request.Request(
             url,
             data=json.dumps(payload).encode("utf-8"),
-            headers={"Content-Type": "application/json"}
+            headers={
+                "Content-Type": "application/json",
+                "x-goog-api-key": GEMINI_API_KEY
+            }
         )
         try:
             res = urllib.request.urlopen(req, timeout=12)
@@ -281,7 +294,10 @@ Javob o'zbek tilida, emoji belgilar bilan chiroyli va tushunarli formatda bo'lsi
         req = urllib.request.Request(
             url,
             data=json.dumps(payload).encode("utf-8"),
-            headers={"Content-Type": "application/json"}
+            headers={
+                "Content-Type": "application/json",
+                "x-goog-api-key": GEMINI_API_KEY
+            }
         )
         try:
             res = urllib.request.urlopen(req, timeout=15)
@@ -350,7 +366,10 @@ TALABLAR:
         req = urllib.request.Request(
             url,
             data=json.dumps(payload).encode("utf-8"),
-            headers={"Content-Type": "application/json"}
+            headers={
+                "Content-Type": "application/json",
+                "x-goog-api-key": GEMINI_API_KEY
+            }
         )
         try:
             res = urllib.request.urlopen(req, timeout=15)

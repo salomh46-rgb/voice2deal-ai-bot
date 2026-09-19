@@ -50,7 +50,10 @@ def check_gemini_api_health():
         req = urllib.request.Request(
             url,
             data=json.dumps(payload).encode("utf-8"),
-            headers={"Content-Type": "application/json"}
+            headers={
+                "Content-Type": "application/json",
+                "x-goog-api-key": GEMINI_API_KEY
+            }
         )
         with urllib.request.urlopen(req, timeout=10) as resp:
             if resp.getcode() == 200:

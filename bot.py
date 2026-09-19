@@ -1491,6 +1491,14 @@ def handle_update(update):
     else:
         return
 
+    if isinstance(parsed_data, dict) and parsed_data.get("_error") == "api_error":
+        send_message(
+            chat_id,
+            "⚠️ <b>Sun'iy intellekt xizmatida ulanish xatoligi yuz berdi!</b>\n\n"
+            "AI serveri bilan aloqa vaqtincha uzildi (API kalit yoki provayder holati). Iltimos, birozdan so'ng qayta urinib ko'ring yoki amallarni matn ko'rinishida yozing."
+        )
+        return
+
     if not parsed_data:
         send_message(chat_id, "⚠️ Xabarni tushunib bo'lmadi. Iltimos, savdo, qarz yoki to'lov amalini aniqroq ayting yoki yozing.\nMasalan: <i>«Akmal akaga 2 ta moy filtr berdim 50 mingdan»</i>")
         return
